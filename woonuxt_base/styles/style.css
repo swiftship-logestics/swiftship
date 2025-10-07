@@ -1,0 +1,204 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "Avenir";
+    font-weight: 400;
+    font-size: 18px;
+}
+
+@font-face {
+  font-family: "PingLCG";
+  src: url("/fonts/PingLCGRegular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "PingLCG";
+  src: url("/fonts/PingLCGMedium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "PingLCG";
+  src: url("/fonts/PingLCGBold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: "PingLCG";
+  src: url("/fonts/PingLCGBlack.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: "PingLCG";
+  src: url("/fonts/PingLCGHeavy.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Avenir";
+  src: url("/fonts/AvenirLTProRoman.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Avenir";
+  src: url("/fonts/AvenirLTProMedium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Avenir";
+  src: url("/fonts/AvenirLTProBook.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Avenir";
+  src: url("/fonts/AvenirLTProHeavy.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+.container {
+    width: 100%;
+    max-width: 1280px;
+}
+.main_menu a.router-link-active {
+    color: #2689C6;
+}
+header .top_bar {
+    position: relative;
+}
+header .top_bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    display: block;
+    width: calc((99vw - 100%) / 2);
+    height: 99%;
+    background-color: #eef9ff;
+    left: 100%;
+}
+header .top_bar::before {
+    content: '';
+    width: 0;
+    height: 0;
+    border-top: 45px solid #eef9ff;
+    border-left: 55px solid transparent;
+    position: absolute;
+    left: -55px;
+}
+ul.fes_ul {
+    counter-reset: my-sec-counter;
+    position: relative;
+}
+ul.fes_ul::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    border: 1px dashed #0000004d;
+    width: 1px;
+    height: 90%;
+}
+ul.fes_ul li {
+    position: relative;
+    counter-increment: my-sec-counter;
+}
+ul.fes_ul li::before {
+    content: counter(my-sec-counter);
+    background: #248BC6;
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    left: 0;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'PingLCG';
+    font-size: 16px;
+    font-weight: 700;
+    line-height: normal;
+}
+body.menu-open, body.menu-open #__nuxt {
+    overflow: hidden;
+}
+.menu-open header.sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+.bg_linear_cst {
+    background: linear-gradient(75deg, black, transparent);
+}
+.policies_text {
+    margin: 60px 0;
+}
+.container-terms {
+    width: 100%;
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.policies_text h2 {
+    color: #141416;
+    font-size: 30px;
+    font-family: 'PingLCG';
+    font-weight: 800;
+    line-height: normal;
+    margin-bottom: 20px;
+}
+.policies_text p {
+    color: #141416;
+    font-size: 14px;
+    line-height: 25px;
+    font-family: 'Avenir';
+    font-weight: 400;
+    margin-bottom: 18px;
+}
+.policies_text h3 {
+    color: #141416;
+    font-size: 18px;
+    font-family: 'PingLCG';
+    font-weight: 700;
+    line-height: normal;
+    margin-bottom: 15px;
+}
+.policies_text ul {
+    margin-bottom: 15px;
+    list-style: disc;
+    padding-left: 16px;
+}
+.policies_text ul li {
+    color: #141416;
+    font-size: 14px;
+    line-height: 25px;
+    font-family: 'Avenir';
+    font-weight: 400;
+    margin-bottom: 8px;
+}
+
+
+
+
+
+@media (max-width: 767px) {
+header .top_bar::before {
+  content: none;
+}
+.policies_text h2 {
+    font-size: 24px;
+    margin-bottom: 14px;
+}
+
+}
