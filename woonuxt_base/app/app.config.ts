@@ -4,7 +4,7 @@
  * Below are the default values.
  */
 export default defineAppConfig({
-  siteName: 'SwitftShip Logistics',
+  siteName: 'SwiftShip Logistics',
   shortDescription: '',
   description: ``,
   baseUrl: '',
