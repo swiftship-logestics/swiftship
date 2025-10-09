@@ -4,11 +4,11 @@
  * Below are the default values.
  */
 export default defineAppConfig({
-  siteName: 'Switftship',
+  siteName: 'SwitftShip Logistics',
   shortDescription: '',
   description: ``,
   baseUrl: '',
-  siteImage: 'empty.png',
+  siteImage: '/logo.svg',
   storeSettings: {
     autoOpenCart: false,
     showReviews: true,
