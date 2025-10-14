@@ -32,7 +32,7 @@ const menuItems = ref<ParsedMenu>({
   items: [
     { label: 'Home', href: '/' },
     { label: 'Services', href: '/services' },
-    { label: 'About us', href: '/about-us' },
+    { label: 'About us', href: '/about' },
     { label: 'FAQ', href: '/faq' },
     { label: 'Tracking', href: '/tracking' }
   ],
@@ -71,7 +71,7 @@ const getMenuLink = (index: number, originalHref: string) => {
        case 1:
       return '/services';;
     case 2:
-      return '/about-us';
+      return '/about';
     case 3:
       return '/faq';
     case 4:
