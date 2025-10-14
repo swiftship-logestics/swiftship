@@ -13,6 +13,7 @@ interface MenuData {
 }
 
 
+
 // const { data, pending, error } = await useFetch<MenuData>('/api/mainmenu');
 
 interface ParsedMenu {
