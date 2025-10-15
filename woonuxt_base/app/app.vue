@@ -19,7 +19,8 @@ watch(
 );
 
 useHead({
-  titleTemplate: `%s - ${siteName}`,
+  // titleTemplate: `%s - ${siteName}`,
+  titleTemplate: `${siteName}`,
 });
 </script>
 
