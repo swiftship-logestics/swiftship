@@ -14,7 +14,8 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
-      link: [{ rel: 'icon', href: '/logo.svg', type: 'image/svg+xml' }],
+      link: [{ rel: 'icon', href: '/logo.png', type: 'image/svg+xml' }],
+      titleTemplate: '%s', // <-- This will prevent Nuxt from adding " - Site Name"
     },
     pageTransition: { name: 'page', mode: 'default' },
   },

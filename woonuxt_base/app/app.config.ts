@@ -8,7 +8,7 @@ export default defineAppConfig({
   shortDescription: '',
   description: ``,
   baseUrl: '',
-  siteImage: '/logo.svg',
+  siteImage: '/logo.png',
   storeSettings: {
     autoOpenCart: false,
     showReviews: true,
