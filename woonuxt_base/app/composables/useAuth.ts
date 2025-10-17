@@ -82,12 +82,12 @@ export const useAuth = () => {
   async function logoutUser(): Promise<AuthResponse> {
     isPending.value = true;
     try {
-      const { logout } = await GqlLogout();
-      if (logout) {
-        await refreshCart();
-        clearAllCookies();
-        customer.value = { billing: {}, shipping: {} };
-      }
+      // const { logout } = await GqlLogout();
+      // if (logout) {
+      //   await refreshCart();
+      //   clearAllCookies();
+      //   customer.value = { billing: {}, shipping: {} };
+      // }
       return { success: true };
     } catch (error: any) {
       const errorMsg = getErrorMessage(error);
