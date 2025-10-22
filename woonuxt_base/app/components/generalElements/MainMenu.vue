@@ -113,7 +113,7 @@ router.afterEach(() => {
   <div class="flex items-center pt-[8px]">
     <NuxtLink v-if="menuItems.logo" to="/" class="font-bold text-xl md:max-w-[100%] max-w-[86px] md:min-w-[auto] min-w-[86px] md:max-h-[none] max-h-[80px] md:min-h-[auto] min-h-[80px] object-cover">
       <!-- {{ menuItems.logo.text }} -->
-        <img src="/images/swift-logo.svg" class="" />
+        <img src="/images/Frame 1171280212.png" class="" />
     </NuxtLink>
   </div>
 
