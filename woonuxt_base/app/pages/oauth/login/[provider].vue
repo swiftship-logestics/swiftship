@@ -21,8 +21,8 @@ if (code && state && provider && !error) {
 
 <template>
   <div class="container min-h-[600px]">
-    <div v-if="showLoader" class="flex flex-col min-h-[500px]">
+    <!-- <div v-if="showLoader" class="flex flex-col min-h-[500px]">
       <LoadingIcon class="m-auto" />
-    </div>
+    </div> -->
   </div>
 </template>
