@@ -44,7 +44,9 @@
       </button>
 
       <div class="flex items-center justify-between mt-4" v-if="formView === FormView.LOGIN">
-        <div class="font-semibold cursor-pointer text-sm text-primary hover:text-primary" @click="navigate(FormView.FORGOT_PASSWORD)">Forgot password?</div>
+        <!-- <div class="font-semibold cursor-pointer text-sm text-primary hover:text-primary" @click="navigate(FormView.FORGOT_PASSWORD)">Forgot password?</div> -->
+        <div class="font-semibold cursor-pointer text-sm text-primary hover:text-primary" >Forgot password?</div>
+
       </div>
     </form>
 
@@ -134,22 +136,22 @@ const login = async (userInfo: UserInfo) => {
 
 const handleFormSubmit = async (userInfo: UserInfo) => {
   
-  if (formView.value === FormView.REGISTER) {
-    const { success, error } = await registerUser(userInfo);
-    if (success) {
-      errorMessage.value = '';
-      message.value = t('messages.account.accountCreated') + ' ' + t('messages.account.loggingIn');
-      setTimeout(() => {
-        login(userInfo);
-      }, 2000);
-    } else {
-      errorMessage.value = error ?? '';
-    }
-  } else if (formView.value === FormView.FORGOT_PASSWORD) {
-    resetPassword(userInfo);
-  } else {
-    login(userInfo);
-  }
+  // if (formView.value === FormView.REGISTER) {
+  //   const { success, error } = await registerUser(userInfo);
+  //   if (success) {
+  //     errorMessage.value = '';
+  //     message.value = t('messages.account.accountCreated') + ' ' + t('messages.account.loggingIn');
+  //     setTimeout(() => {
+  //       login(userInfo);
+  //     }, 2000);
+  //   } else {
+  //     errorMessage.value = error ?? '';
+  //   }
+  // } else if (formView.value === FormView.FORGOT_PASSWORD) {
+  //   resetPassword(userInfo);
+  // } else {
+  //   login(userInfo);
+  // }
 };
 
 const resetPassword = async (userInfo: UserInfo) => {
@@ -199,8 +201,8 @@ const passwordLabel = computed(() => t('messages.account.password'));
 
 const inputPlaceholder = computed(() => {
   return {
-    email: 'johndoe@email.com',
-    username: formView.value === FormView.LOGIN ? 'johndoe@email.com' : 'johndoe',
+    email: 'Enter email',
+    username: formView.value === FormView.LOGIN ? 'Enter email' : 'Enter name',
     password: '********',
   };
 });
