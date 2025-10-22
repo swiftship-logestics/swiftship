@@ -23,7 +23,7 @@ export default defineNuxtConfig({
      // 👇 Add this block for dev proxy
      devProxy: {
       "/graphql": {
-        target: "https://development.brstdev.com/swiftship/graphql",
+        target: "https://admin.swiftshiplogistics.com.au/graphql",
         changeOrigin: true,
       },
     },
