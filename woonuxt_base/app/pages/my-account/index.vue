@@ -13,10 +13,10 @@ useSeoMeta({
 
 <template>
   <div class="container min-h-[600px]">
-    <div v-if="showLoader" class="flex flex-col min-h-[500px]">
+    <!-- <div v-if="showLoader" class="flex flex-col min-h-[500px]">
       <LoadingIcon class="m-auto" />
     </div>
-    <template v-else>
+    <template v-else> -->
       <LazyLoginAndRegister v-if="!viewer" />
       <div v-else class="flex flex-col items-start justify-between w-full lg:gap-12 mb-24 lg:flex-row">
         <div class="mt-2 lg:sticky top-16 w-full lg:max-w-[260px]">
@@ -68,7 +68,7 @@ useSeoMeta({
           <WishList v-else-if="activeTab === 'wishlist'" />
         </main>
       </div>
-    </template>
+    <!-- </template> -->
   </div>
 </template>
 
