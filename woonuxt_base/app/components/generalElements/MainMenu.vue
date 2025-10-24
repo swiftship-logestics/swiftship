@@ -114,7 +114,7 @@ router.afterEach(() => {
       <NuxtLink v-if="menuItems.logo" to="/"
         class="font-bold text-xl md:max-w-[100%] max-w-[86px] md:min-w-[auto] min-w-[86px] md:max-h-[none] max-h-[80px] md:min-h-[auto] min-h-[80px] object-cover">
         <!-- {{ menuItems.logo.text }} -->
-        <img src="/images/Frame 1171280212.png" class="" />
+        <img src="/images/swiftshift-logo1.svg" class="" />
       </NuxtLink>
     </div>
 
