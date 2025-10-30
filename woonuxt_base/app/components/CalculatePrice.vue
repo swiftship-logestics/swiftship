@@ -8,6 +8,27 @@ const toast = useToast()
 const router = useRouter()
 const token = import.meta.env.VITE_AUTH_TOKEN
 const BACKEND_API = import.meta.env.VITE_BACKEND_API
+const fromError = ref('')
+const toError = ref('')
+
+const validateFrom = () => {
+    const code = Number(selectedFrom.value)
+    if (selectedFrom.value.length === 4) {
+        fromError.value = postalCodesMapping[code] ? '' : 'This postcode is not available'
+    } else {
+        fromError.value = ''
+    }
+}
+
+const validateTo = () => {
+    const code = Number(selectedTo.value)
+    if (selectedTo.value.length === 4) {
+        toError.value = postalCodesMapping[code] ? '' : 'This postcode is not available'
+    } else {
+        toError.value = ''
+    }
+}
+
 
 const postalCodesMapping: Record<number, string> = {
     3000: "Melbourne",
@@ -215,9 +236,32 @@ const submitQuote = async () => {
 
     weightError.value = ''
     errorMsg.value = ''
-
-    if (!selectedFrom.value || !selectedTo.value || !weight.value || !length.value || !width.value || !height.value) {
+  if (!selectedFrom.value || !selectedTo.value || !weight.value || !length.value || !width.value || !height.value) {
         toast.error("Please complete all fields and provide parcel dimensions.")
+        return
+    }
+    const fromCode = Number(selectedFrom.value)
+    const toCode = Number(selectedTo.value)
+
+    if (!postalCodesMapping[fromCode]) {
+        fromError.value = 'This postcode is not available'
+    } else {
+        fromError.value = ''
+    }
+
+    if (!postalCodesMapping[toCode]) {
+        toError.value = 'This postcode is not available'
+    } else {
+        toError.value = ''
+    }
+
+    if (fromError.value || toError.value) {
+        return
+    }
+
+
+    if (isNaN(weight.value)) {
+        toast.error("Weight must be a number")
         return
     }
 
@@ -285,32 +329,28 @@ const submitQuote = async () => {
                     class="w-full flex xl:flex-nowrap flex-wrap items-center border border-[#E4E4F1] rounded-b-[7px] px-[24px] py-[20px] justify-between">
                     <!-- From Country -->
                     <div
-                        class="flex items-center lg:border-r border-r-0 border-[#D9D9D9] lg:pr-[24px] pr-[0] lg:mr-[24px] mr-[0]">
-                        <span class="block w-full">
+                        class="flex flex-col items-center lg:border-r border-r-0 border-[#D9D9D9] lg:pr-[24px] pr-[0] lg:mr-[24px] mr-[0]">
+                        <div class="flex items-center w-full">
+
                             <img src="/images/home_pin.svg" class="min-w-[19px]" />
-                        </span>
-                        <select v-model="selectedFrom" id="from_country"
-                            class="w-full lg:w-[230px] md:w-[200px] sm:w-[170px] outline-none bg-transparent m-0 border-none py-[18px] pl-[14px] pr-[35px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]">
-                            <option disabled value="">From: Select Postal Code</option>
-                            <option v-for="option in postalOptions" :key="option.value" :value="option.value">
-                                {{ option.label }}
-                            </option>
-                        </select>
+
+                            <input type="text" v-model="selectedFrom" placeholder="From: Enter postcode" maxlength="4"
+                                class="w-full lg:w-[230px] md:w-[200px] sm:w-[170px] outline-none bg-transparent m-0 border-gray-300 py-[18px] pl-[14px] pr-[14px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]"
+                                @input="validateFrom" />
+                        </div>
+                        <p v-if="fromError" class="text-red-500 text-sm mt-1">{{ fromError }}</p>
                     </div>
 
                     <!-- To Country -->
                     <div
-                        class="flex items-center lg:border-r border-r-0 border-[#D9D9D9] lg:pr-[24px] pr-[0] lg:mr-[24px] mr-[0]">
-                        <span class="block w-full">
+                        class="flex flex-col items-center lg:border-r border-r-0 border-[#D9D9D9] lg:pr-[24px] pr-[0] lg:mr-[24px] mr-[0]">
+                        <div class="flex items-center w-full">
                             <img src="/images/home_pin.svg" class="min-w-[19px]" />
-                        </span>
-                        <select v-model="selectedTo" id="to_country"
-                            class="w-full lg:w-[210px] md:w-[180px] sm:w-[150px] outline-none bg-transparent m-0 border-none py-[18px] pl-[14px] pr-[35px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]">
-                            <option disabled value="">To: Select Postal Code</option>
-                            <option v-for="option in postalOptions" :key="option.value" :value="option.value">
-                                {{ option.label }}
-                            </option>
-                        </select>
+                            <input type="text" v-model="selectedTo" placeholder="To: Enter postcode" maxlength="4"
+                                class="w-full lg:w-[210px] md:w-[180px] sm:w-[150px] outline-none bg-transparent m-0 border-gray-300 py-[18px] pl-[14px] pr-[14px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]"
+                                @input="validateTo" />
+                        </div>
+                        <p v-if="toError" class="text-red-500 text-sm mt-1">{{ toError }}</p>
                     </div>
 
                     <!-- Parcel Weight -->
@@ -319,8 +359,8 @@ const submitQuote = async () => {
                             <span class="block w-full mr-[14px]">
                                 <img src="/images/shopping_bag.svg" class="min-w-[18px]" />
                             </span>
-                            <input type="text" v-model.number="weight" placeholder="Parcel Weight?"
-                                class="w-[100px] lg:w-[120px] outline-none bg-transparent text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]" />
+                            <input type="number" v-model.number="weight" placeholder="Parcel Weight?"
+                                class="w-[100px] lg:w-[120px] outline-none bg-transparent text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]  [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield" />
                         </div>
                         <p v-if="weightError" class="text-red-500 text-sm mt-1">{{ weightError }}</p>
                     </div>
@@ -339,11 +379,11 @@ const submitQuote = async () => {
                             class="absolute z-50 top-full mt-2 left-0 bg-white border border-gray-300 rounded p-4 shadow-lg w-[200px]">
                             <div class="flex flex-col gap-2">
                                 <input type="number" v-model.number="length" placeholder="Length (cm)"
-                                    class="outline-none border-b border-gray-300 pb-1" />
+                                    class="outline-none border-b border-gray-300 pb-1  [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield" />
                                 <input type="number" v-model.number="width" placeholder="Width (cm)"
-                                    class="outline-none border-b border-gray-300 pb-1" />
+                                    class="outline-none border-b border-gray-300 pb-1  [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield" />
                                 <input type="number" v-model.number="height" placeholder="Height (cm)"
-                                    class="outline-none border-b border-gray-300 pb-1" />
+                                    class="outline-none border-b border-gray-300 pb-1  [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield" />
                                 <p v-if="errorMsg" class="text-red-500 text-sm">{{ errorMsg }}</p>
                                 <div class="flex justify-end gap-2 mt-2">
                                     <button @click="showModal = false"
@@ -367,10 +407,9 @@ const submitQuote = async () => {
 
 
                     <!-- Button -->
-                    <button @click="submitQuote" to="/getquote"
-                     :disabled="isSubmitting"
+                    <button @click="submitQuote" to="/getquote" :disabled="isSubmitting"
                         class="bg-[#248BC6] whitespace-nowrap text-white rounded-[6px] font-[PingLCG] font-[500] text-[16px] leading-normal lg:px-[36px] px-[32px] lg:py-[16px] py-[12px] lg:h-[57px] h-auto border border-[#248BC6] hover:bg-white hover:border-[#14141633] hover:text-[#141416] cursor-pointer lg:mt-[0] mt-[20px]">
-                         {{ isSubmitting ? 'Get a Quote...' : 'Get a Quote' }}
+                        {{ isSubmitting ? 'Get a Quote...' : 'Get a Quote' }}
                     </button>
                 </div>
             </div>
