@@ -250,7 +250,7 @@ const submitQuote = async () => {
                                     <input type="text" v-model="selectedTo" placeholder="To: Enter postcode"
                                         maxlength="4" id="to_country" pattern="\d*"
                                         @input="selectedTo = selectedTo?.replace(/\D/g, '').slice(0, 4)"
-                                        class="w-full lg:w-[210px] md:w-[180px] sm:w-[150px] outline-none bg-transparent m-0 border-none py-[18px] pl-[14px] pr-[35px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]" " />
+                                        class="w-full lg:w-[210px] md:w-[180px] sm:w-[150px] outline-none bg-transparent m-0 border-none py-[18px] pl-[14px] pr-[35px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]"  />
                             </div>
                             <p v-if="toError" class="text-red-500 text-sm mt-1">{{ toError }}</p>
                                 </div>
@@ -366,13 +366,13 @@ const submitQuote = async () => {
                                             </span>
                                         </div>
                                         <div class="md:py-[50px] py-[25px] px-[30px]">
-                                            <NuxtLink :class="[
+                                            <NuxtLink  :class="[
                                                 'bg-[#141416] whitespace-nowrap text-white rounded-[6px] font-[PingLCG] font-[500] text-[16px] leading-normal lg:px-[36px] px-[32px] lg:py-[16px] py-[12px] lg:h-[57px] h-auto border border-[#141416] hover:bg-white hover:border-[#141416] hover:text-[#141416] lg:mt-[0] mt-[20px] cursor-pointer',
                                                 booking ? 'cursor-not-allowed' : ''
                                             ]" :disabled="booking">
                                                 {{ booking ? 'Booking...' : 'Book Now' }}
                                             </NuxtLink>
-                                            <!-- @click.prevent="bookNow" -->
+                                       <!-- @click.prevent="bookNow" -->
                                         </div>
                                     </div>
                                 </div>
