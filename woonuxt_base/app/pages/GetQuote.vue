@@ -21,6 +21,9 @@ const booking = ref(false)
 const fromError = ref('')
 const toError = ref('')
 
+
+
+
 const bookNow = async () => {
     if (booking.value) return;
     booking.value = true;
@@ -85,7 +88,7 @@ Signature: ${signatureOnDelivery.value ? 'Yes' : 'No'}
 onMounted(() => {
     const query = route.query
     if (query.from) selectedFrom.value = Number(query.from)
-    if (query.to) selectedTo.value = String(query.to)
+    if (query.to) selectedTo.value = Number(query.to)
     if (query.weight) weight.value = Number(query.weight)
     if (query.length) length.value = Number(query.length)
     if (query.width) width.value = Number(query.width)
@@ -111,7 +114,7 @@ onMounted(() => {
 
 
 const selectedFrom = ref<number | null>(null)
-const selectedTo = ref<string>('')
+const selectedTo = ref<number | null>(null)
 const weight = ref<number | null>(null)
 const length = ref<number | null>(null)
 const width = ref<number | null>(null)
@@ -146,34 +149,27 @@ const submitQuote = async () => {
     fromError.value = ""
     toError.value = ""
     showQuote.value = false
-
-   let hasError = false;
+    let hasError = false;
     if (!selectedFrom.value || !selectedTo.value || !weight.value || !length.value || !width.value || !height.value) {
         toast.error("Please complete all fields and provide parcel dimensions.")
-       hasError = true;
+        hasError = true;
     }
- if (!selectedFrom.value || String(selectedFrom.value).length !== 4) {
+    if (selectedFrom.value.length !== 4) {
         fromError.value = 'From postcode must be 4 digits.'
-        hasError = true;      
+        hasError = true;
+
     }
-    if (!selectedTo.value || selectedTo.value.length !== 4) {
+    if (selectedTo.value.length !== 4) {
         toError.value = 'To postcode must be 4 digits.'
         hasError = true;
     }
 
+    if (weight.value > 22) {
+        weightError.value = 'Weight must not exceed 22 kg'
+        hasError = true;
+    }
 
-    // Validate weight (not exceeding 22kg)
-        if (weight.value == null || Number.isNaN(weight.value as number)) {
-            toast.error("Weight must be a number")
-            hasError = true;
-        }
-    
-        if (weight.value != null && weight.value > 22) {
-            weightError.value = 'Weight must not exceed 22 kg'
-            hasError = true;
-        }
-
-      if (hasError) {
+    if (hasError) {
         return;
     }
 
@@ -181,7 +177,7 @@ const submitQuote = async () => {
 
     const body = {
         // frompostcode: selectedFrom.value,
-        postcode: Number(selectedTo.value),
+        postcode: selectedTo.value,
         weight: weight.value,
         length: length.value,
         width: width.value,
@@ -240,7 +236,7 @@ const submitQuote = async () => {
 
                                 <input type="text" v-model="selectedFrom" placeholder="From: Enter postcode"
                                     maxlength="4" id="from_country" pattern="\d*"
-                                    @input="selectedFrom = Number(String(selectedFrom)?.replace(/\D/g, '').slice(0, 4))"
+                                    @input="selectedFrom = selectedFrom?.replace(/\D/g, '').slice(0, 4)"
                                     class="w-full lg:w-[230px] md:w-[200px] sm:w-[170px] outline-none bg-transparent m-0 border-none py-[18px] pl-[14px] pr-[35px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]" " />
                             </div>
                             <p v-if="fromError" class="text-red-500 text-sm mt-1">{{ fromError }}</p>
@@ -370,7 +366,7 @@ const submitQuote = async () => {
                                             </span>
                                         </div>
                                         <div class="md:py-[50px] py-[25px] px-[30px]">
-                                            <NuxtLink  :class="[
+                                            <NuxtLink :class="[
                                                 'bg-[#141416] whitespace-nowrap text-white rounded-[6px] font-[PingLCG] font-[500] text-[16px] leading-normal lg:px-[36px] px-[32px] lg:py-[16px] py-[12px] lg:h-[57px] h-auto border border-[#141416] hover:bg-white hover:border-[#141416] hover:text-[#141416] lg:mt-[0] mt-[20px] cursor-pointer',
                                                 booking ? 'cursor-not-allowed' : ''
                                             ]" :disabled="booking">
