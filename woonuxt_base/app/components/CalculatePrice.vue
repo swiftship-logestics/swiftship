@@ -64,11 +64,7 @@ const submitQuote = async () => {
     }
 
 
-    // Validate weight (not exceeding 22kg)
-    if (weight.value === null || isNaN(Number(weight.value))) {
-        toast.error("Weight must be a number")
-       hasError = true;
-    } else if (weight.value > 22) {
+    if (weight.value > 22) {
         weightError.value = 'Weight must not exceed 22 kg'
         hasError = true;
     }
@@ -99,19 +95,32 @@ const submitQuote = async () => {
             })
         if (response.data.success && response.data.quote) {
             // Navigate to getquote page with query params
-            router.push({
-                path: '/getquote',
-                query: {
-                    from: selectedFrom.value,
-                    to: selectedTo.value,
-                    weight: weight.value,
-                    length: length.value,
-                    width: width.value,
-                    height: height.value,
-                    total: response.data.quote.total,
-                    signature: signatureOnDelivery.value ? '1' : '0'
-                }
-            })
+            // router.push({
+            //     path: '/getquote',
+            //     query: {
+            //         from: selectedFrom.value,
+            //         to: selectedTo.value,
+            //         weight: weight.value,
+            //         length: length.value,
+            //         width: width.value,
+            //         height: height.value,
+            //         total: response.data.quote.total,
+            //         signature: signatureOnDelivery.value ? '1' : '0'
+            //     }
+            // })
+
+            const queryParams = new URLSearchParams({
+                from: selectedFrom.value,
+                to: selectedTo.value,
+                weight: weight.value!.toString(),
+                length: length.value!.toString(),
+                width: width.value!.toString(),
+                height: height.value!.toString(),
+                total: response.data.quote.total.toString(),
+                signature: signatureOnDelivery.value ? '1' : '0'
+            }).toString()
+
+            window.location.href = `/getquote?${queryParams}`;
         }
     } catch (error: any) {
         if (error.response?.data?.error) {
@@ -219,7 +228,7 @@ const submitQuote = async () => {
 
 
                     <!-- Button -->
-                    <button @click="submitQuote" to="/getquote" :disabled="isSubmitting"
+                    <button @click="submitQuote" :disabled="isSubmitting"
                         class="bg-[#248BC6] whitespace-nowrap text-white rounded-[6px] font-[PingLCG] font-[500] text-[16px] leading-normal lg:px-[36px] px-[32px] lg:py-[16px] py-[12px] lg:h-[57px] h-auto border border-[#248BC6] hover:bg-white hover:border-[#14141633] hover:text-[#141416] cursor-pointer lg:mt-[0] mt-[20px]">
                         {{ isSubmitting ? 'Get a Quote...' : 'Get a Quote' }}
                     </button>
