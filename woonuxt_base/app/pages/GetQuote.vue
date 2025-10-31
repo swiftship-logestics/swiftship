@@ -237,7 +237,7 @@ const submitQuote = async () => {
                                 <input type="text" v-model="selectedFrom" placeholder="From: Enter postcode"
                                     maxlength="4" id="from_country" pattern="\d*"
                                     @input="selectedFrom = selectedFrom?.replace(/\D/g, '').slice(0, 4)"
-                                    class="w-full lg:w-[230px] md:w-[200px] sm:w-[170px] outline-none bg-transparent m-0 border-none py-[18px] pl-[14px] pr-[35px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]" " />
+                                    class="w-full lg:w-[230px] md:w-[200px] sm:w-[170px] outline-none bg-transparent m-0 border-none py-[18px] pl-[14px] pr-[35px] text-[#646464] font-[PingLCG] font-[500] text-[15px] leading-[normal]" />
                             </div>
                             <p v-if="fromError" class="text-red-500 text-sm mt-1">{{ fromError }}</p>
                             </div>
