@@ -24,7 +24,7 @@ export default defineNuxtConfig({
      devProxy: {
       "/graphql": {
         target: "https://admin.swiftshiplogistics.com.au/graphql",
-        changeOrigin: true,
+        changeOrigin: false,
       },
     },
   },
