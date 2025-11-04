@@ -2,37 +2,23 @@ import { defineEventHandler, readBody } from 'h3';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
-  
-  const { orderId, transactionId } = body;
-  
+  const { orderId } = body;
 
-  if (!orderId || !transactionId) {
-    return { error: 'Missing orderId or transactionId' };
-  }
+  if (!orderId) return { error: 'Missing orderId' };
 
   const wcUrl = process.env.WC_API_URL;
-; 
   const consumerKey = process.env.CONSUMER_KEY;
   const consumerSecret = process.env.CONSUMER_SECRET;
+  const authHeader = `Basic ${Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64')}`;
 
   try {
-    const authHeader = `Basic ${Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64')}`;
-
     const response = await $fetch(`${wcUrl}/orders/${orderId}`, {
-      method: 'PUT',
       headers: {
         Authorization: authHeader,
         'Content-Type': 'application/json',
       },
-      body: {
-        status: 'processing',
-        meta_data: [
-          { key: 'transaction_id', value: transactionId },
-          
-        ]
-      }
     });
- console.log('✅ WooCommerce order updated successfully:::::::::::::::', response);
+
     return { success: true, data: response };
   } catch (err: any) {
     return { error: err.message };

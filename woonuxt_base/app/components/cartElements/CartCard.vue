@@ -28,16 +28,16 @@ const moveToWishList = () => {
 
 <template>
   <SwipeCard @remove="removeItem">
-    <div v-if="productType" class="flex items-center gap-3 group">
+    <div v-if="productType" class="flex items-center group">
       <NuxtLink :to="productSlug">
-        <NuxtImg
+        <!-- <NuxtImg
           width="64"
           height="64"
           class="w-16 h-16 rounded-md skeleton"
           :src="imgScr"
           :alt="productType.image?.altText || productType.name"
           :title="productType.image?.title || productType.name"
-          loading="lazy" />
+          loading="lazy" /> -->
       </NuxtLink>
       <div class="flex-1">
         <div class="flex gap-x-2 gap-y-1 flex-wrap items-center">
@@ -53,7 +53,7 @@ const moveToWishList = () => {
       </div>
       <div class="inline-flex gap-2 flex-col items-end">
         <QuantityInput :item />
-        <div class="text-xs text-gray-400 group-hover:text-gray-700 flex leading-none items-center">
+        <!-- <div class="text-xs text-gray-400 group-hover:text-gray-700 flex leading-none items-center">
           <button v-if="storeSettings.showMoveToWishlist" class="mr-2 pr-2 border-r" @click="moveToWishList" type="button">Move to Wishlist</button>
           <button
             title="Remove Item"
@@ -63,7 +63,7 @@ const moveToWishList = () => {
             class="flex items-center gap-1 hover:text-red-500 cursor-pointer">
             <Icon name="ion:trash" class="hidden md:inline-block" size="12" />
           </button>
-        </div>
+        </div> -->
       </div>
     </div>
   </SwipeCard>

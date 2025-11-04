@@ -1,12 +1,15 @@
 import type { CheckoutInput, CreateAccountInput, UpdateCustomerInput } from '#gql';
 import { toRaw } from 'vue';
+import { useToast } from '../composables/useToast'
+const toast = useToast()
 export function useCheckout() {
   const orderInput = useState<any>('orderInput', () => {
     return {
       customerNote: '',
       paymentMethod: '',
       shipToDifferentAddress: false,
-      metaData: [{ key: 'order_via', value: 'WooNuxt' }],
+      metaData: [{ key: 'order_via', value: '' }],
+      createAccount: true,
     };
   });
 
@@ -56,314 +59,350 @@ export function useCheckout() {
     });
   }
 
-//   const processCheckout = async (isPaid = false): Promise<any> => {
-//     const { customer, loginUser } = useAuth();
-//     console.log("customer:::::::::::::::::::::",customer.value);
-    
-//     const router = useRouter();
-//     const { replaceQueryParam } = useHelpers();
-//     const { cart, emptyCart, refreshCart } = useCart();
+  //   const processCheckout = async (isPaid = false): Promise<any> => {
+  //     const { customer, loginUser } = useAuth();
+  //     console.log("customer:::::::::::::::::::::",customer.value);
 
-//     isProcessingOrder.value = true;
+  //     const router = useRouter();
+  //     const { replaceQueryParam } = useHelpers();
+  //     const { cart, emptyCart, refreshCart } = useCart();
 
-//     const { username, password, shipToDifferentAddress } = orderInput.value;
-//     const billing = customer.value?.billing;
-//     const shipping = shipToDifferentAddress ? customer.value?.shipping : billing;
-//     const shippingMethod = cart.value?.chosenShippingMethods;
+  //     isProcessingOrder.value = true;
 
-//     try {
-//       let checkoutPayload: CheckoutInput = {
-//         billing,
-//         shipping,
-//         shippingMethod,
-//         metaData: orderInput.value.metaData,
-//         paymentMethod: orderInput.value.paymentMethod.id,
-//         customerNote: orderInput.value.customerNote,
-//         shipToDifferentAddress,
-//         transactionId: orderInput.value.transactionId,
-//         isPaid,
-//       };
-//       console.log("checkoutPayload::::::::::::::",checkoutPayload);
-      
-//       // Create account
-//       if (orderInput.value.createAccount) {
-//         checkoutPayload.account = { username, password } as CreateAccountInput;
-//         console.log("checkoutPayload.account:::::::::::::::::::",checkoutPayload.account);
-        
-//       } else {
-//         console.log("else::::::::::::::");
-        
-//         // Remove account from checkoutPayload if not creating account otherwise it will create an account anyway
-//         checkoutPayload.account = null;
-//       }
+  //     const { username, password, shipToDifferentAddress } = orderInput.value;
+  //     const billing = customer.value?.billing;
+  //     const shipping = shipToDifferentAddress ? customer.value?.shipping : billing;
+  //     const shippingMethod = cart.value?.chosenShippingMethods;
 
-//       const { checkout } = await GqlCheckout(checkoutPayload);
+  //     try {
+  //       let checkoutPayload: CheckoutInput = {
+  //         billing,
+  //         shipping,
+  //         shippingMethod,
+  //         metaData: orderInput.value.metaData,
+  //         paymentMethod: orderInput.value.paymentMethod.id,
+  //         customerNote: orderInput.value.customerNote,
+  //         shipToDifferentAddress,
+  //         transactionId: orderInput.value.transactionId,
+  //         isPaid,
+  //       };
+  //       console.log("checkoutPayload::::::::::::::",checkoutPayload);
 
-//       console.log("checkout::::::::::::",checkout);
-      
+  //       // Create account
+  //       if (orderInput.value.createAccount) {
+  //         checkoutPayload.account = { username, password } as CreateAccountInput;
+  //         console.log("checkoutPayload.account:::::::::::::::::::",checkoutPayload.account);
 
-//       // Login user if account was created during checkout
-//       if (orderInput.value.createAccount) {
-//         await loginUser({ username, password });
-//       }
+  //       } else {
+  //         console.log("else::::::::::::::");
 
-//       const orderId = checkout?.order?.databaseId;
-//       console.log("orderId:::::::::::::::",orderId);
-      
-//       const orderKey = checkout?.order?.orderKey;
-//        console.log("orderKey:::::::::::::::",orderKey);
-//       const orderInputPaymentId = orderInput.value.paymentMethod.id;
-//       console.log("orderInputPaymentId:::::::::::::::",orderInputPaymentId);
-//       const isPayPal = orderInputPaymentId === 'paypal' || orderInputPaymentId === 'ppcp-gateway';
+  //         // Remove account from checkoutPayload if not creating account otherwise it will create an account anyway
+  //         checkoutPayload.account = null;
+  //       }
 
-//       // PayPal redirect
-//       if ((await checkout?.redirect) && isPayPal) {
-//         const frontEndUrl = window.location.origin;
-//         let redirectUrl = checkout?.redirect ?? '';
-//         const payPalReturnUrl = `${frontEndUrl}/checkout/order-received/${orderId}/?key=${orderKey}&from_paypal=true`;
-//         const payPalCancelUrl = `${frontEndUrl}/checkout/?cancel_order=true&from_paypal=true`;
+  //       const { checkout } = await GqlCheckout(checkoutPayload);
 
-//         redirectUrl = replaceQueryParam('return', payPalReturnUrl, redirectUrl);
-//         redirectUrl = replaceQueryParam('cancel_return', payPalCancelUrl, redirectUrl);
-//         redirectUrl = replaceQueryParam('bn', 'WooNuxt_Cart', redirectUrl);
-
-//         const isPayPalWindowClosed = await openPayPalWindow(redirectUrl);
-
-//         if (isPayPalWindowClosed) {
-//           router.push(`/checkout/order-received/${orderId}/?key=${orderKey}&fetch_delay=true`);
-//         }
-//       } else {
-//         router.push(`/checkout/order-received/${orderId}/?key=${orderKey}`);
-//       }
-// console.log("checkout?.result:::::::::::::::",checkout?.result);
-
-//       if ((await checkout?.result) !== 'success') {
-//         alert('There was an error processing your order. Please try again.');
-//         // window.location.reload();
-//         // return checkout;
-//       } else {
-//         // await emptyCart();
-//         // await refreshCart();
-//       }
-//     } catch (error: any) {
-//       const errorMessage = error?.gqlErrors?.[0].message;
-
-//       if (errorMessage?.includes('An account is already registered with your email address')) {
-//         alert('An account is already registered with your email address');
-//         return null;
-//       }
-
-//       alert(errorMessage);
-//       return null;
-//     } finally {
-//       isProcessingOrder.value = false;
-//     }
-//   };
+  //       console.log("checkout::::::::::::",checkout);
 
 
+  //       // Login user if account was created during checkout
+  //       if (orderInput.value.createAccount) {
+  //         await loginUser({ username, password });
+  //       }
 
-//   const processCheckout = async (isPaid = false): Promise<any> => {
-//   const { customer } = useAuth();
-//   const router = useRouter();
-//   const { replaceQueryParam } = useHelpers();
-//   const { cart, emptyCart, refreshCart } = useCart();
+  //       const orderId = checkout?.order?.databaseId;
+  //       console.log("orderId:::::::::::::::",orderId);
 
-//   isProcessingOrder.value = true;
+  //       const orderKey = checkout?.order?.orderKey;
+  //        console.log("orderKey:::::::::::::::",orderKey);
+  //       const orderInputPaymentId = orderInput.value.paymentMethod.id;
+  //       console.log("orderInputPaymentId:::::::::::::::",orderInputPaymentId);
+  //       const isPayPal = orderInputPaymentId === 'paypal' || orderInputPaymentId === 'ppcp-gateway';
 
-//   const billing = customer.value?.billing;
-//   const shipping = orderInput.value.shipToDifferentAddress ? customer.value?.shipping : billing;
-//   const shippingMethod = cart.value?.chosenShippingMethods;
+  //       // PayPal redirect
+  //       if ((await checkout?.redirect) && isPayPal) {
+  //         const frontEndUrl = window.location.origin;
+  //         let redirectUrl = checkout?.redirect ?? '';
+  //         const payPalReturnUrl = `${frontEndUrl}/checkout/order-received/${orderId}/?key=${orderKey}&from_paypal=true`;
+  //         const payPalCancelUrl = `${frontEndUrl}/checkout/?cancel_order=true&from_paypal=true`;
 
-//   try {
-//     // Prepare checkout payload
-//     const checkoutPayload: CheckoutInput = {
-//       billing,
-//       shipping,
-//       shippingMethod,
-//       metaData: orderInput.value.metaData,
-//       paymentMethod: orderInput.value.paymentMethod.id,
-//       customerNote: orderInput.value.customerNote,
-//       shipToDifferentAddress: orderInput.value.shipToDifferentAddress,
-//       transactionId: orderInput.value.transactionId,
-//       isPaid,
-//       account: null, // no account creation
-//     };
+  //         redirectUrl = replaceQueryParam('return', payPalReturnUrl, redirectUrl);
+  //         redirectUrl = replaceQueryParam('cancel_return', payPalCancelUrl, redirectUrl);
+  //         redirectUrl = replaceQueryParam('bn', 'WooNuxt_Cart', redirectUrl);
 
-//     console.log("checkoutPayload::::::::::::::", checkoutPayload);
+  //         const isPayPalWindowClosed = await openPayPalWindow(redirectUrl);
 
-//     // Execute checkout
-//     const { checkout } = await GqlCheckout(checkoutPayload);
+  //         if (isPayPalWindowClosed) {
+  //           router.push(`/checkout/order-received/${orderId}/?key=${orderKey}&fetch_delay=true`);
+  //         }
+  //       } else {
+  //         router.push(`/checkout/order-received/${orderId}/?key=${orderKey}`);
+  //       }
+  // console.log("checkout?.result:::::::::::::::",checkout?.result);
 
-//     const order = checkout?.order;
-//     const orderId = order?.databaseId;
-//     const orderKey = order?.orderKey;
+  //       if ((await checkout?.result) !== 'success') {
+  //         alert('There was an error processing your order. Please try again.');
+  //         // window.location.reload();
+  //         // return checkout;
+  //       } else {
+  //         // await emptyCart();
+  //         // await refreshCart();
+  //       }
+  //     } catch (error: any) {
+  //       const errorMessage = error?.gqlErrors?.[0].message;
 
-//     if (!orderId) {
-//       console.error("Order creation failed", order);
-//       alert("Error creating order. Please try again.");
-//       return null;
-//     }
+  //       if (errorMessage?.includes('An account is already registered with your email address')) {
+  //         alert('An account is already registered with your email address');
+  //         return null;
+  //       }
 
-//     // Redirect after checkout (if needed)
-//     const orderInputPaymentId = orderInput.value.paymentMethod.id;
-//     const isPayPal = orderInputPaymentId === 'paypal' || orderInputPaymentId === 'ppcp-gateway';
-
-//     if (checkout?.redirect && isPayPal) {
-//       const frontEndUrl = window.location.origin;
-//       let redirectUrl = checkout.redirect ?? '';
-//       const payPalReturnUrl = `${frontEndUrl}/checkout/order-received/${orderId}/?key=${orderKey}&from_paypal=true`;
-//       const payPalCancelUrl = `${frontEndUrl}/checkout/?cancel_order=true&from_paypal=true`;
-
-//       redirectUrl = replaceQueryParam('return', payPalReturnUrl, redirectUrl);
-//       redirectUrl = replaceQueryParam('cancel_return', payPalCancelUrl, redirectUrl);
-//       redirectUrl = replaceQueryParam('bn', 'WooNuxt_Cart', redirectUrl);
-
-//       const isPayPalWindowClosed = await openPayPalWindow(redirectUrl);
-
-//       if (isPayPalWindowClosed) {
-//         router.push(`/checkout/order-received/${orderId}/?key=${orderKey}&fetch_delay=true`);
-//       }
-//     } else {
-//       router.push(`/checkout/order-received/${orderId}/?key=${orderKey}`);
-//     }
-
-//     // Clear cart after successful checkout
-//     await emptyCart();
-//     await refreshCart();
-
-//     return order; // return the order object so you can get orderId for Stripe
-//   } catch (error: any) {
-//     const errorMessage = error?.gqlErrors?.[0]?.message || error.message || 'Unknown error';
-//     console.error("Checkout error:", errorMessage);
-//     alert(errorMessage);
-//     return null;
-//   } finally {
-//     isProcessingOrder.value = false;
-//   }
-// };
-
-
-
-
-// const processCheckout = async (isPaid = false): Promise<any> => {
-//   const { customer } = useAuth();
-//   const { cart } = useCart();
-// console.log("customer::::::::::::::::::",customer.value);
-
-//   const billing = customer.value?.billing;
-//   const shipping = orderInput.value.shipToDifferentAddress ? customer.value?.shipping : billing;
-//   const shippingMethod = cart.value?.chosenShippingMethods;
-// console.log("billing::::::::::::::::::",billing);
-// console.log("shipping::::::::::::::::::",shipping);
-// console.log("shippingMethod::::::::::::::::::",shippingMethod);
-
-//   try {
-//     const checkoutPayload: CheckoutInput = {
-//       billing,
-//       shipping,
-//       shippingMethod,
-//       metaData: [
-//         ...orderInput.value.metaData,
-//         { key: 'stripe_payment_pending', value: isPaid ? 'false' : 'true' }
-//       ],
-//       paymentMethod: orderInput.value.paymentMethod.id,
-//       customerNote: orderInput.value.customerNote,
-//       shipToDifferentAddress: orderInput.value.shipToDifferentAddress,
-//       isPaid,
-//   account :  null
-//     };
-// console.log("checkoutPayload:::::::::::::",checkoutPayload);
-
-
-//     //  // Create account
-//     //   if (orderInput.value.createAccount) {
-//     //     checkoutPayload.account = { username, password } as CreateAccountInput;
-//     //     console.log("checkoutPayload.account:::::::::::::::::::",checkoutPayload.account);
-        
-//     //   } else {
-//     //     console.log("else::::::::::::::");
-        
-//     //     // Remove account from checkoutPayload if not creating account otherwise it will create an account anyway
-//     //     checkoutPayload.account = null;
-//     //   }
-
-//     const { checkout } = await GqlCheckout(checkoutPayload);
-//     const order = checkout?.order;
-//     console.log("order:::::::::::::::",order);
-    
-// console.log("order.databaseid::::::::::::::::",order?.databaseId);
-
-//     if (!order?.databaseId) {
-//       throw new Error("Order creation failed");
-//     }
-
-//     return order;
-//   } catch (error: any) {
-//     const errorMessage = error?.gqlErrors?.[0]?.message || error.message || 'Unknown error';
-//     console.error("Checkout error:", errorMessage);
-//     throw new Error(errorMessage);
-//   }
-// };
-
-
-
-const processCheckout = async (isPaid = false): Promise<any> => {
-  const { customer, loginUser } = useAuth(); 
-
-  const router = useRouter();
-  const { replaceQueryParam } = useHelpers();
-  const { cart, emptyCart, refreshCart } = useCart();
-
-  isProcessingOrder.value = true;
-
-  // if (!customer.value?.billing?.email) {
-  //   console.log("generate customer email random::::::::::::::::::::::::::::::::::");
-    
-  //   // const randomEmail = `testuser_${Math.floor(Math.random() * 10000)}@mailinator.com`;
-
-  //   customer.value = {
-  //    email: "user@mailinator.com"
+  //       alert(errorMessage);
+  //       return null;
+  //     } finally {
+  //       isProcessingOrder.value = false;
+  //     }
   //   };
-  // }
 
-  const { shipToDifferentAddress } = orderInput.value;
-  const billing = {
-  ...customer.value.billing,
-  email: customer.value.billing.email || customer.value.email
-};
-  const shipping = shipToDifferentAddress ? customer.value.shipping : billing;
-  const shippingMethod = cart.value?.chosenShippingMethods;
 
-  try {
-    let checkoutPayload: CheckoutInput = {
-      billing,
-      shipping,
-      shippingMethod,
-      metaData: orderInput.value.metaData,
-      paymentMethod: orderInput.value.paymentMethod.id,
-      customerNote: orderInput.value.customerNote,
-      shipToDifferentAddress,
-      transactionId: orderInput.value.transactionId,
-      isPaid,
-      account: null, 
-    };
 
-    const { checkout } = await GqlCheckout(checkoutPayload);
-    const order = checkout?.order;
+  //   const processCheckout = async (isPaid = false): Promise<any> => {
+  //   const { customer } = useAuth();
+  //   const router = useRouter();
+  //   const { replaceQueryParam } = useHelpers();
+  //   const { cart, emptyCart, refreshCart } = useCart();
 
-    if (!order?.databaseId) {
-      throw new Error("Order creation failed");
+  //   isProcessingOrder.value = true;
+
+  //   const billing = customer.value?.billing;
+  //   const shipping = orderInput.value.shipToDifferentAddress ? customer.value?.shipping : billing;
+  //   const shippingMethod = cart.value?.chosenShippingMethods;
+
+  //   try {
+  //     // Prepare checkout payload
+  //     const checkoutPayload: CheckoutInput = {
+  //       billing,
+  //       shipping,
+  //       shippingMethod,
+  //       metaData: orderInput.value.metaData,
+  //       paymentMethod: orderInput.value.paymentMethod.id,
+  //       customerNote: orderInput.value.customerNote,
+  //       shipToDifferentAddress: orderInput.value.shipToDifferentAddress,
+  //       transactionId: orderInput.value.transactionId,
+  //       isPaid,
+  //       account: null, // no account creation
+  //     };
+
+  //     console.log("checkoutPayload::::::::::::::", checkoutPayload);
+
+  //     // Execute checkout
+  //     const { checkout } = await GqlCheckout(checkoutPayload);
+
+  //     const order = checkout?.order;
+  //     const orderId = order?.databaseId;
+  //     const orderKey = order?.orderKey;
+
+  //     if (!orderId) {
+  //       console.error("Order creation failed", order);
+  //       alert("Error creating order. Please try again.");
+  //       return null;
+  //     }
+
+  //     // Redirect after checkout (if needed)
+  //     const orderInputPaymentId = orderInput.value.paymentMethod.id;
+  //     const isPayPal = orderInputPaymentId === 'paypal' || orderInputPaymentId === 'ppcp-gateway';
+
+  //     if (checkout?.redirect && isPayPal) {
+  //       const frontEndUrl = window.location.origin;
+  //       let redirectUrl = checkout.redirect ?? '';
+  //       const payPalReturnUrl = `${frontEndUrl}/checkout/order-received/${orderId}/?key=${orderKey}&from_paypal=true`;
+  //       const payPalCancelUrl = `${frontEndUrl}/checkout/?cancel_order=true&from_paypal=true`;
+
+  //       redirectUrl = replaceQueryParam('return', payPalReturnUrl, redirectUrl);
+  //       redirectUrl = replaceQueryParam('cancel_return', payPalCancelUrl, redirectUrl);
+  //       redirectUrl = replaceQueryParam('bn', 'WooNuxt_Cart', redirectUrl);
+
+  //       const isPayPalWindowClosed = await openPayPalWindow(redirectUrl);
+
+  //       if (isPayPalWindowClosed) {
+  //         router.push(`/checkout/order-received/${orderId}/?key=${orderKey}&fetch_delay=true`);
+  //       }
+  //     } else {
+  //       router.push(`/checkout/order-received/${orderId}/?key=${orderKey}`);
+  //     }
+
+  //     // Clear cart after successful checkout
+  //     await emptyCart();
+  //     await refreshCart();
+
+  //     return order; // return the order object so you can get orderId for Stripe
+  //   } catch (error: any) {
+  //     const errorMessage = error?.gqlErrors?.[0]?.message || error.message || 'Unknown error';
+  //     console.error("Checkout error:", errorMessage);
+  //     alert(errorMessage);
+  //     return null;
+  //   } finally {
+  //     isProcessingOrder.value = false;
+  //   }
+  // };
+
+
+
+
+  // const processCheckout = async (isPaid = false): Promise<any> => {
+  //   const { customer } = useAuth();
+  //   const { cart } = useCart();
+  // console.log("customer::::::::::::::::::",customer.value);
+
+  //   const billing = customer.value?.billing;
+  //   const shipping = orderInput.value.shipToDifferentAddress ? customer.value?.shipping : billing;
+  //   const shippingMethod = cart.value?.chosenShippingMethods;
+  // console.log("billing::::::::::::::::::",billing);
+  // console.log("shipping::::::::::::::::::",shipping);
+  // console.log("shippingMethod::::::::::::::::::",shippingMethod);
+
+  //   try {
+  //     const checkoutPayload: CheckoutInput = {
+  //       billing,
+  //       shipping,
+  //       shippingMethod,
+  //       metaData: [
+  //         ...orderInput.value.metaData,
+  //         { key: 'stripe_payment_pending', value: isPaid ? 'false' : 'true' }
+  //       ],
+  //       paymentMethod: orderInput.value.paymentMethod.id,
+  //       customerNote: orderInput.value.customerNote,
+  //       shipToDifferentAddress: orderInput.value.shipToDifferentAddress,
+  //       isPaid,
+  //   account :  null
+  //     };
+  // console.log("checkoutPayload:::::::::::::",checkoutPayload);
+
+
+  //     //  // Create account
+  //     //   if (orderInput.value.createAccount) {
+  //     //     checkoutPayload.account = { username, password } as CreateAccountInput;
+  //     //     console.log("checkoutPayload.account:::::::::::::::::::",checkoutPayload.account);
+
+  //     //   } else {
+  //     //     console.log("else::::::::::::::");
+
+  //     //     // Remove account from checkoutPayload if not creating account otherwise it will create an account anyway
+  //     //     checkoutPayload.account = null;
+  //     //   }
+
+  //     const { checkout } = await GqlCheckout(checkoutPayload);
+  //     const order = checkout?.order;
+  //     console.log("order:::::::::::::::",order);
+
+  // console.log("order.databaseid::::::::::::::::",order?.databaseId);
+
+  //     if (!order?.databaseId) {
+  //       throw new Error("Order creation failed");
+  //     }
+
+  //     return order;
+  //   } catch (error: any) {
+  //     const errorMessage = error?.gqlErrors?.[0]?.message || error.message || 'Unknown error';
+  //     console.error("Checkout error:", errorMessage);
+  //     throw new Error(errorMessage);
+  //   }
+  // };
+
+
+
+  const processCheckout = async (isPaid = false): Promise<any> => {
+    const { customer, loginUser } = useAuth();
+
+    const router = useRouter();
+    const { replaceQueryParam } = useHelpers();
+    const { cart, emptyCart, refreshCart } = useCart();
+
+    isProcessingOrder.value = true;
+
+    const { shipToDifferentAddress, createAccount } = orderInput.value;
+    let username = orderInput.value.username;
+    let password = orderInput.value.password;
+
+    if (orderInput.value.createAccount) {
+      const billing = customer.value?.billing || {};
+
+      const firstName = billing.firstName?.trim() || '';
+      const email = billing.email?.trim() || customer.value?.email?.trim() || '';
+
+      const randomSuffix = Math.random().toString(36).substring(2, 8);
+      username = `${firstName.toLowerCase() || email.split('@')[0]}${randomSuffix}`;
+      orderInput.value.username = username;
+
+      // if (!username) {
+      //   username = firstName.toLowerCase() || email.split('@')[0];
+      //   orderInput.value.username = username;
+      // }
+
+
+
+      if (!password) {
+        password = Math.random().toString(36).slice(-8);
+        orderInput.value.password = password;
+      }
+
+      // console.log("Generated account:", { username, password, email });
     }
 
-    return order;
-  } catch (error: any) {
-    const errorMessage = error?.gqlErrors?.[0]?.message;
-    alert(errorMessage ?? 'Unknown error');
-    return null;
-  } finally {
-    isProcessingOrder.value = false;
-  }
-};
+
+
+    const billing = {
+      ...customer.value.billing,
+      email: customer.value.billing.email || customer.value.email
+    };
+    const shipping = shipToDifferentAddress ? customer.value.shipping : billing;
+    const shippingMethod = cart.value?.chosenShippingMethods;
+
+    try {
+      let checkoutPayload: CheckoutInput = {
+        billing,
+        shipping,
+        shippingMethod,
+        metaData: orderInput.value.metaData,
+        paymentMethod: orderInput.value.paymentMethod.id,
+        customerNote: orderInput.value.customerNote,
+        shipToDifferentAddress,
+        transactionId: orderInput.value.transactionId,
+        isPaid,
+        account: orderInput.value.createAccount
+          ? { username, password } as CreateAccountInput
+          : null,
+      };
+
+      const { checkout } = await GqlCheckout(checkoutPayload);
+      const order = checkout?.order;
+
+      if (!order?.databaseId) {
+        throw new Error("Order creation failed");
+      }
+
+      if (orderInput.value.createAccount) {
+        const email = billing.email;
+
+
+        await $fetch('/api/send-user-account-email', {
+          method: 'POST',
+          body: {
+            username,
+            email,
+            password
+          }
+        })
+      }
+
+      return order;
+    } catch (error: any) {
+      const errorMessage = error?.gqlErrors?.[0]?.message;
+      toast.error(errorMessage ?? 'Unknown error');
+      return { toastAlreadyShown: true };
+    } finally {
+      isProcessingOrder.value = false;
+    }
+  };
 
 
 

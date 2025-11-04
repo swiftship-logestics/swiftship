@@ -2,15 +2,17 @@ import axios from 'axios'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-
+  const API_URL = process.env.WC_API_URL
+  const CONSUMER_KEY = process.env.CONSUMER_KEY
+  const CONSUMER_SECRET = process.env.CONSUMER_SECRET
   try {
     const response = await axios.post(
-      'https://development.brstdev.com/swiftship/wp-json/wc/v3/products',
+      `${API_URL}/products`,
       body,
       {
         headers: {
           Authorization: `Basic ${Buffer.from(
-            `${process.env.CONSUMER_KEY}:${process.env.CONSUMER_SECRET}`
+            `${CONSUMER_KEY}:${CONSUMER_SECRET}`
           ).toString('base64')}`,
           'Content-Type': 'application/json'
         }

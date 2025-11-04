@@ -53,14 +53,14 @@ const updatePassword = async () => {
     const { updateCustomer } = await GqlUpdateCustomer({ input: { id: viewer.value.id, password: password.value.new } });
     if (updateCustomer) {
       button.value = { text: t('messages.account.updateSuccess'), color: 'bg-green-500' };
-      const { success, error } = await loginUser({ username: viewer.value.username, password: password.value.new });
-      if (error) {
-        errorMessage.value = error;
-        button.value = { text: t('messages.account.failed'), color: 'bg-red-500' };
-      }
-      if (success) {
-        password.value = { new: '', confirm: '' };
-      }
+      // const { success, error } = await loginUser({ username: viewer.value.username, password: password.value.new });
+      // if (error) {
+      //   errorMessage.value = error;
+      //   button.value = { text: t('messages.account.failed'), color: 'bg-red-500' };
+      // }
+      // if (success) {
+      //   password.value = { new: '', confirm: '' };
+      // }
     }
   } catch (error) {
     console.error(error);

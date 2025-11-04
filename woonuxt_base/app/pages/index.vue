@@ -48,6 +48,7 @@ const services = [
                 Get a Quote
               </NuxtLink>
               <NuxtLink
+              to="/tracking"
                 class="hover:bg-[#248BC6] hover:text-white rounded-[6px] font-[PingLCG] font-[500] md:text-[16px] text-[15px] leading-normal px-[36px] lg:py-[16px] py-[12px] lg:h-[57px] h-auto border hover:border-[#248BC6] bg-white border-[#14141633] text-[#141416] cursor-pointer text-center">
                 Track Shipment
               </NuxtLink>
@@ -62,7 +63,7 @@ const services = [
 
     <CalculatePrice />
 
-    <section class="bg-[#FAFAFA] lg:mt-[100px] mt-[50px]">
+    <section id="services"  class="bg-[#FAFAFA] lg:mt-[100px] mt-[50px]">
       <div class="container">
         <div class="lg:py-[100px] py-[50px] w-full">
           <h2 class="text-[#141416] font-[PingLCG] font-[800] lg:text-[44px] md:text-[30px] text-[28px] leading-[normal]">
@@ -107,9 +108,6 @@ const services = [
     <FAQSection />
 
     <GetInTouch />
-
-
-
 
 
     <!-- Loading state -->

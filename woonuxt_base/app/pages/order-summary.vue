@@ -70,7 +70,7 @@ useSeoMeta({
 
 <template>
   <div
-    class="w-full min-h-[600px] flex items-center p-4 text-gray-800 md:bg-white md:rounded-xl md:mx-auto md:shadow-lg md:my-24 md:mt-8 md:max-w-3xl md:p-16 flex-col">
+    class="w-full min-h-[600px] flex items-center p-4 text-gray-800 md:bg-white md:rounded-xl md:mx-auto md:shadow-lg md:my-24 md:mt-8 md:max-w-5xl md:p-16 flex-col">
     <LoadingIcon v-if="!isLoaded" class="flex-1" />
     <template v-else>
       <div v-if="order" class="w-full">
@@ -128,7 +128,7 @@ useSeoMeta({
 
           <div class="grid gap-2">
             <div v-for="item in order.lineItems.nodes" :key="item.id" class="flex items-center justify-between gap-8">
-              <NuxtLink v-if="item.product?.node" :to="`/product/${item.product.node.slug}`">
+              <!-- <NuxtLink v-if="item.product?.node" :to="`/product/${item.product.node.slug}`">
                 <NuxtImg
                   class="w-16 h-16 rounded-xl"
                   :src="item.variation?.node?.image?.sourceUrl || item.product.node?.image?.sourceUrl || '/images/placeholder.png'"
@@ -137,7 +137,7 @@ useSeoMeta({
                   width="64"
                   height="64"
                   loading="lazy" />
-              </NuxtLink>
+              </NuxtLink> -->
               <div class="flex-1 leading-tight">
                 {{ item.variation ? item.variation?.node?.name : item.product?.node.name! }}
               </div>

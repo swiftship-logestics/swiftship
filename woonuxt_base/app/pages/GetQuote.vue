@@ -72,6 +72,7 @@ Signature: ${signatureOnDelivery.value ? 'Yes' : 'No'}
             router.push('/checkout');
         } else {
             toast.error('Failed to add product to cart. Please try again.');
+            return
         }
 
 
@@ -366,13 +367,12 @@ const submitQuote = async () => {
                                             </span>
                                         </div>
                                         <div class="md:py-[50px] py-[25px] px-[30px]">
-                                            <NuxtLink  :class="[
+                                            <NuxtLink @click.prevent="bookNow" :class="[
                                                 'bg-[#141416] whitespace-nowrap text-white rounded-[6px] font-[PingLCG] font-[500] text-[16px] leading-normal lg:px-[36px] px-[32px] lg:py-[16px] py-[12px] lg:h-[57px] h-auto border border-[#141416] hover:bg-white hover:border-[#141416] hover:text-[#141416] lg:mt-[0] mt-[20px] cursor-pointer',
                                                 booking ? 'cursor-not-allowed' : ''
                                             ]" :disabled="booking">
                                                 {{ booking ? 'Booking...' : 'Book Now' }}
                                             </NuxtLink>
-                                       <!-- @click.prevent="bookNow" -->
                                         </div>
                                     </div>
                                 </div>
