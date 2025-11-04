@@ -20,19 +20,19 @@ export function useCart() {
    */
   async function refreshCart(): Promise<boolean> {
     try {
-      // const { cart, customer, viewer, paymentGateways, loginClients } = await GqlGetCart();
+      const { cart, customer, viewer, paymentGateways, loginClients } = await GqlGetCart();
       const { updateCustomer, updateViewer, updateLoginClients } = useAuth();
 
-      // if (cart) updateCart(cart);
-      // if (customer) updateCustomer(customer);
-      // if (viewer) updateViewer(viewer);
-      // if (paymentGateways) updatePaymentGateways(paymentGateways);
-      // if (loginClients) updateLoginClients(loginClients.filter((client) => client !== null));
+      if (cart) updateCart(cart);
+      if (customer) updateCustomer(customer);
+      if (viewer) updateViewer(viewer);
+      if (paymentGateways) updatePaymentGateways(paymentGateways);
+      if (loginClients) updateLoginClients(loginClients.filter((client) => client !== null));
 
       return true; // Cart was successfully refreshed
     } catch (error: any) {
       const errorMsg = getErrorMessage(error);
-      console.error('Error refreshing cart:', errorMsg);
+      // console.error('Error refreshing cart:', errorMsg);
       clearAllCookies();
       resetInitialState();
       return false; // Cart was not successfully refreshed
@@ -64,8 +64,30 @@ export function useCart() {
     isUpdatingCart.value = true;
 
     try {
-      const { addToCart } = await GqlAddToCart({ input });     
-      if (addToCart?.cart) cart.value = addToCart.cart;
+      const { addToCart } = await GqlAddToCart({ input });   
+        
+      if (addToCart?.cart) {
+      cart.value = addToCart.cart;
+
+    const productAdded = cart.value?.contents?.nodes?.some(
+  (item: any) => Number(item.product?.node?.databaseId) === Number(input.productId)
+);
+
+//       console.log('Item added to cart:', input);
+//       console.log('Updated cart:', cart.value);
+
+//       // Optional: check specifically if the product exists in cart
+// const isAdded = cart.value.contents?.nodes?.some(
+//   (item: any) => Number(item.product?.node?.databaseId) === Number(input.productId)
+// );
+// console.log('Was the product added successfully?', isAdded);
+// console.log(
+//   'Products in cart:',
+//   cart.value.contents?.nodes?.map((item: any) => item.product?.node?.databaseId)
+// );
+
+
+    }
       // Auto open the cart when an item is added to the cart if the setting is enabled
       const { storeSettings } = useAppConfig();
       if (storeSettings.autoOpenCart && !isShowingCart.value) toggleCart(true);
@@ -110,7 +132,9 @@ export function useCart() {
     try {
       isUpdatingCart.value = true;
       const { emptyCart } = await GqlEmptyCart();
-      updateCart(emptyCart?.cart);
+      
+     updateCart(emptyCart?.cart);
+    
     } catch (error: any) {
       const errorMsg = getErrorMessage(error);
       console.error('Error emptying cart:', errorMsg);

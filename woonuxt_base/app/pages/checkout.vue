@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { loadStripe } from '@stripe/stripe-js';
+import { NuxtLink } from '#components';
+import { useToast } from '../composables/useToast'
+const toast = useToast()
 import type { Stripe, StripeElements, CreateSourceData, StripeCardElement } from '@stripe/stripe-js';
-// import { GqlGetStripePaymentIntent } from '../composables/useStripe';
 import { getStripeClientSecret } from '../composables/useStripe';
+const fullOrder = ref<any>(null);
 
 const { t } = useI18n();
 const { query } = useRoute();
-const { cart, isUpdatingCart, paymentGateways } = useCart();
+const { cart, isUpdatingCart, paymentGateways, refreshCart } = useCart();
 const { customer, viewer } = useAuth();
 const { orderInput, isProcessingOrder, processCheckout } = useCheckout();
 const runtimeConfig = useRuntimeConfig();
@@ -36,22 +39,40 @@ onBeforeMount(async () => {
 });
 
 const payNow = async () => {
+  
+  isProcessingOrder.value = true;
   buttonText.value = t('messages.general.processing');
 
+  if (orderInput.value.paymentMethod?.id === 'stripe') {
+    if (!stripe.value || !elements.value) {
+      toast.error("Stripe is not loaded. Please try again.");
+      buttonText.value = t('messages.shop.checkoutButton');
+      isProcessingOrder.value = false;
+      return;
+    }
+
+    const cardElement = elements.value.getElement('card') as StripeCardElement;
+    if (!cardElement || !cardElement._complete) {
+      toast.error("Please enter your card details before proceeding.");
+      buttonText.value = t('messages.shop.checkoutButton');
+      isProcessingOrder.value = false;
+      return;
+    }
+  }
   try {
-
+    
     const orderResult = await processCheckout(false);
-
+    isProcessingOrder.value = true;
+    if (orderResult?.toastAlreadyShown) return;
     if (!orderResult?.databaseId) throw new Error("Order not created");
 
     interface StripeIntentResponse {
       clientSecret: string;
     }
 
-    const rawPrice = orderResult.total ?? 0; // e.g., "₹19.00" or 19.00
-    const numericPrice = Number(String(rawPrice).replace(/[^\d.-]/g, '')); // removes ₹, $ etc.
+    const rawPrice = orderResult.total ?? 0;
+    const numericPrice = Number(String(rawPrice).replace(/[^\d.-]/g, ''));
     const amount = Math.round(numericPrice * 100);
-
     const response = await $fetch<StripeIntentResponse>('/api/create-stripe-intent', {
       method: 'POST',
       body: {
@@ -60,30 +81,24 @@ const payNow = async () => {
       }
     });
 
-
     const clientSecret = response.clientSecret;
 
-    // 3. Confirm payment with Stripe.js
     if (stripe.value && elements.value) {
       const cardElement = elements.value.getElement('card') as StripeCardElement;
-
 
       const { error, paymentIntent } = await stripe.value.confirmCardPayment(clientSecret, {
         payment_method: { card: cardElement }
       });
 
       if (error) {
-        console.error("Stripe payment error:", error);
+        toast.error("Stripe payment failed");
         buttonText.value = t('messages.shop.placeOrder');
+        isProcessingOrder.value = false;
         return;
       }
 
       if (paymentIntent?.status === 'succeeded') {
         orderInput.value.transactionId = paymentIntent.id;
-        // 4. Mark as paid in WooCommerce
-        // await processCheckout(true);
-
-        // STEP 4: Mark order as paid in WooCommerce via API
         await $fetch('/api/mark-order-paid', {
           method: 'POST',
           body: {
@@ -91,73 +106,79 @@ const payNow = async () => {
             transactionId: paymentIntent?.id
           }
         });
+        toast.success("Payment successful!");
 
 
-        // 5. Redirect to order received page
-        window.location.href = `/checkout/order-received/${orderResult.databaseId}/?key=${orderResult.orderKey}`;
+        try {
+
+          const shippingInfo = orderInput.value.shipToDifferentAddress
+            ? customer.value.shipping
+            : customer.value.billing;
+
+          const billingInfo = customer.value.billing;
+
+          const tookanData = {
+            order_id: orderResult.databaseId,
+            job_description: orderInput.value.customerNote?.trim() || "No description provided",
+
+            // Pickup info
+            job_pickup_name: `${billingInfo?.firstName || ''} ${billingInfo?.lastName || ''}`.trim(),
+            job_pickup_email: billingInfo?.email || '',
+            job_pickup_phone: billingInfo?.phone || '',
+            job_pickup_address: `${billingInfo?.address1 || ''}, ${billingInfo?.city || ''}, ${billingInfo?.state || ''}, ${billingInfo?.country || ''}, ${billingInfo?.postcode || ''}`,
+            job_pickup_latitude: 0,
+            job_pickup_longitude: 0,
+            job_pickup_datetime: new Date().toISOString(),
+
+            // Delivery info
+            customer_username: `${shippingInfo?.firstName || ''} ${shippingInfo?.lastName || ''}`.trim(),
+            customer_email: shippingInfo?.email || '',
+            customer_phone: shippingInfo?.phone || '',
+            customer_address: `${shippingInfo?.address1 || ''}, ${shippingInfo?.city || ''}, ${shippingInfo?.state || ''}, ${shippingInfo?.country || ''}, ${shippingInfo?.postcode || ''}`,
+
+            job_delivery_datetime: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString(),
+
+            latitude: 0,
+            longitude: 0,
+            has_pickup: 1,
+            has_delivery: 1,
+            timezone: String(-new Date().getTimezoneOffset()),
+            notify: 1,
+            auto_assignment: 1
+          };
+
+
+          const tookanResponse = await $fetch('/api/create-tookan-order', {
+            method: 'POST',
+            body: tookanData
+          })
+           await $fetch('/api/update-order-tookan-meta', {
+            method: 'POST',
+            body: {
+              orderId: orderResult.databaseId,
+              tookanResponse
+            }
+          });
+
+        } catch (e) {
+          console.error("❌ Tookan order creation failed:", e);
+        }
+
+        window.location.href = `/thank-you?orderId=${orderResult.databaseId}`;
+
       }
     }
   } catch (err) {
-    console.error("Checkout failed:", err);
     buttonText.value = t('messages.shop.placeOrder');
+    toast.error("Checkout failed. Please try again.");
+  } finally {
+    isProcessingOrder.value = false;
+  console.log("isProcessingOrder.value:%6u767557::",isProcessingOrder.value);
+
+    buttonText.value = t('messages.shop.checkoutButton');
   }
 };
 
-
-
-// const payNow = async () => {
-//   buttonText.value = t('messages.general.processing');
-
-//   try {
-//     // STEP 1: Create the WooCommerce order (unpaid)
-//     const orderResult = await processCheckout(false); 
-//     console.log("orderResult:::::::::::", orderResult);
-
-//     if (!orderResult?.databaseId) throw new Error("Order not created");
-
-//     // STEP 2: Get Stripe client secret from backend
-//     const rawPrice = orderResult.total ?? 0;
-//     const numericPrice = Number(String(rawPrice).replace(/[^\d.-]/g, ''));
-//     const amount = Math.round(numericPrice * 100);
-
-//     const response = await $fetch<{ clientSecret: string }>('/api/create-stripe-intent', {
-//       method: 'POST',
-//       body: {
-//         orderId: orderResult.databaseId,
-//         amount
-//       }
-//     });
-
-//     const clientSecret = response.clientSecret;
-//     if (!clientSecret) throw new Error("Stripe client secret not found");
-
-//     // STEP 3: Confirm card payment with Stripe
-//     if (stripe.value && elements.value) {
-//       const cardElement = elements.value.getElement('card') as StripeCardElement;
-
-//       const { error, paymentIntent } = await stripe.value.confirmCardPayment(clientSecret, {
-//         payment_method: { card: cardElement },
-//       });
-
-//       if (error) {
-//         console.error("Stripe payment error:", error);
-//         buttonText.value = t('messages.shop.placeOrder');
-//         return;
-//       }
-
-//       if (paymentIntent?.status === 'succeeded') {
-//         // STEP 4: Mark order as paid
-//         await processCheckout(true);
-
-//         // STEP 5: Redirect to order confirmation
-//         window.location.href = `/checkout/order-received/${orderResult.databaseId}/?key=${orderResult.orderKey}`;
-//       }
-//     }
-//   } catch (err) {
-//     console.error("Checkout failed:", err);
-//     buttonText.value = t('messages.shop.placeOrder');
-//   }
-// };
 
 
 
@@ -178,18 +199,30 @@ const checkEmailOnInput = (email?: string | null): void => {
 useSeoMeta({
   title: t('messages.shop.checkout'),
 });
+
+const cartItems = cart.value?.contents?.nodes || [];
+onMounted(async () => {
+  if (!cart.value) {
+    await refreshCart();
+  }
+});
 </script>
 
 <template>
   <div class="flex flex-col min-h-[600px]">
     <template v-if="cart && customer">
+      <!-- <template v-if="cart"> -->
       <div v-if="cart.isEmpty" class="flex flex-col items-center justify-center flex-1 mb-12 ">
         <Icon name="ion:cart-outline" size="156" class="opacity-25 mb-5" />
         <h2 class="text-2xl font-bold mb-2">{{ $t('messages.shop.cartEmpty') }}</h2>
-        <span class="text-gray-400 mb-4">{{ $t('messages.shop.addProductsInYourCart') }}</span>
+
+        <!-- <span class="text-gray-400 mb-4">{{ $t('messages.shop.addProductsInYourCart') }}</span>
         <NuxtLink to="/products"
           class="flex items-center justify-center gap-3 p-2 px-3 mt-4 font-semibold text-center text-white rounded-lg shadow-md bg-primary hover:bg-primary-dark">
           {{ $t('messages.shop.browseOurProducts') }}
+        </NuxtLink> -->
+        <NuxtLink to="/" class="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark">
+          Go Back to Home
         </NuxtLink>
       </div>
 
@@ -203,14 +236,14 @@ useSeoMeta({
                 class="text-primary text-semibold">Log in</a>.</p> -->
             <div class="w-full mt-4">
               <label for="email">{{ $t('messages.billing.email') }}</label>
-              <input v-model="customer.billing.email" placeholder="johndoe@email.com" autocomplete="email" type="email"
+              <input v-model="customer.billing.email" placeholder="Enter email" autocomplete="email" type="email"
                 name="email" :class="{ 'has-error': isInvalidEmail }" @blur="checkEmailOnBlur(customer.billing.email)"
                 @input="checkEmailOnInput(customer.billing.email)" required />
               <Transition name="scale-y" mode="out-in">
                 <div v-if="isInvalidEmail" class="mt-1 text-sm text-red-500">Invalid email address</div>
               </Transition>
             </div>
-            <template v-if="orderInput.createAccount">
+            <!-- <template v-if="orderInput.createAccount">
               <div class="w-full mt-4">
                 <label for="username">{{ $t('messages.account.username') }}</label>
                 <input v-model="orderInput.username" placeholder="johndoe" autocomplete="username" type="text"
@@ -221,11 +254,11 @@ useSeoMeta({
                 <PasswordInput id="password" class="my-2" v-model="orderInput.password" placeholder="••••••••••"
                   :required="true" />
               </div>
-            </template>
-            <div v-if="!viewer" class="flex items-center gap-2 my-2">
+            </template> -->
+            <!-- <div v-if="!viewer" class="flex items-center gap-2 my-2">
               <label for="creat-account">Create an account?</label>
               <input id="creat-account" v-model="orderInput.createAccount" type="checkbox" name="creat-account" />
-            </div>
+            </div> -->
           </div>
 
           <div>
@@ -241,18 +274,19 @@ useSeoMeta({
           </label>
 
           <Transition name="scale-y" mode="out-in">
-            <div v-if="orderInput.shipToDifferentAddress">
+            <div>
+            <!-- <div v-if="orderInput.shipToDifferentAddress"> -->
               <h2 class="mb-4 text-xl font-semibold">{{ $t('messages.general.shippingDetails') }}</h2>
               <ShippingDetails v-model="customer.shipping" />
             </div>
           </Transition>
 
           <!-- Shipping methods -->
-          <div v-if="cart.availableShippingMethods && cart.availableShippingMethods.length">
+          <!-- <div v-if="cart.availableShippingMethods && cart.availableShippingMethods.length">
             <h3 class="mb-4 text-xl font-semibold">{{ $t('messages.general.shippingSelect') }}</h3>
             <ShippingOptions :options="cart.availableShippingMethods?.[0]?.rates"
               :active-option="cart.chosenShippingMethods?.[0]" />
-          </div>
+          </div> -->
 
           <!-- Pay methods -->
           <div v-if="paymentGateways?.nodes.length" class="mt-2 col-span-full">
@@ -273,19 +307,38 @@ useSeoMeta({
         </div>
 
         <OrderSummary>
-          <!-- <button
+          <button
             class="flex items-center justify-center w-full gap-3 p-3 mt-4 font-semibold text-center text-white rounded-lg shadow-md bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-gray-400"
-            :disabled="isCheckoutDisabled"> -->
-              <button
+            :disabled="isCheckoutDisabled || isProcessingOrder" :class="{
+              'cursor-not-allowed': isCheckoutDisabled || isProcessingOrder,
+              'cursor-pointer': !(isCheckoutDisabled || isProcessingOrder)
+            }">
+            <!-- <button
             class="flex items-center justify-center w-full gap-3 p-3 mt-4 font-semibold text-center text-white rounded-lg shadow-md bg-primary hover:bg-primary-dark disabled:cursor-not-allowed disabled:bg-gray-400"
-            disabled>
+            disabled> -->
             {{ buttonText }}
-            <LoadingIcon v-if="isProcessingOrder" color="#fff" size="18" />
+            <LoadingIcon v-if="isProcessingOrder" color="#fff" size="18" class="cursor-not-allowed" />
           </button>
         </OrderSummary>
       </form>
+      <!-- <div v-if="fullOrder?.data?.meta_data?.length">
+        <h3>Tookan Meta Fields</h3>
+        <ul>
+          <li v-for="meta in fullOrder.data.meta_data" :key="meta.id">
+            <strong>{{ meta.key }}:</strong> {{ meta.value }}
+          </li>
+        </ul>
+      </div> -->
+
+
     </template>
-    <LoadingIcon v-else class="m-auto" />
+    <!-- <LoadingIcon v-else class="m-auto" /> -->
+      <div v-else class="fixed inset-0 bg-white flex items-center justify-center z-50">
+    <div class="flex flex-col items-center">
+      <div class="w-12 h-12 border-4 border-[#248BC6] border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-[#248BC6] font-semibold mt-4 text-lg">Loading...</p>
+    </div>
+  </div>
   </div>
 </template>
 

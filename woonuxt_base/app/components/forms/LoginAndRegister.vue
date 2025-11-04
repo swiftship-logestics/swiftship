@@ -4,7 +4,8 @@
       <h1 class="text-xl font-semibold lg:text-3xl">{{ formTitle }}</h1>
       <p v-if="formView === FormView.LOGIN" class="text-gray-500 mt-2">
         {{ $t('messages.account.noAccount') }}
-        <a class="font-semibold cursor-pointer text-primary" @click="navigate(FormView.REGISTER)"> {{ $t('messages.account.accountRegister') }} </a>.
+        <a class="font-semibold cursor-pointer text-primary" @click="navigate(FormView.REGISTER)"> {{
+          $t('messages.account.accountRegister') }} </a>.
       </p>
       <p v-else-if="formView === FormView.REGISTER" class="text-gray-500 mt-2">
         {{ $t('messages.account.hasAccount') }}
@@ -15,42 +16,39 @@
     <LoginProviders class="mb-8" v-if="formView === FormView.LOGIN || formView === FormView.REGISTER" />
 
     <form @submit.prevent="handleFormSubmit(userInfo)">
-      <p v-if="formView === FormView.FORGOT_PASSWORD" class="text-sm text-gray-500 mb-8">{{ $t('messages.account.enterEmailOrUsernameForReset') }}</p>
-      <input
-        v-if="formView === FormView.REGISTER || formView === FormView.FORGOT_PASSWORD"
-        id="email"
-        v-model="userInfo.email"
-        :placeholder="inputPlaceholder.email"
-        autocomplete="email"
-        type="text"
-        required />
+      <p v-if="formView === FormView.FORGOT_PASSWORD" class="text-sm text-gray-500 mb-8">{{
+        $t('messages.account.enterEmailOrUsernameForReset') }}</p>
+      <input v-if="formView === FormView.REGISTER || formView === FormView.FORGOT_PASSWORD" id="email"
+        v-model="userInfo.email" :placeholder="inputPlaceholder.email" autocomplete="email" type="text" required />
       <div v-if="formView !== FormView.FORGOT_PASSWORD">
-        <input v-model="userInfo.username" :placeholder="inputPlaceholder.username" autocomplete="username" type="text" required />
-        <PasswordInput
-          className="border rounded-lg w-full p-3 px-4 bg-white "
-          v-model="userInfo.password"
-          :placeholder="passwordLabel"
-          :autocomplete="formView === FormView.LOGIN ? 'current-password' : 'new-password'"
+        <input v-model="userInfo.username" :placeholder="inputPlaceholder.username" autocomplete="username" type="text"
+          required />
+        <PasswordInput className="border rounded-lg w-full p-3 px-4 bg-white " v-model="userInfo.password"
+          :placeholder="passwordLabel" :autocomplete="formView === FormView.LOGIN ? 'current-password' : 'new-password'"
           :required="true" />
       </div>
-      <Transition name="scale-y" mode="out-in">
+      <!-- <Transition name="scale-y" mode="out-in">
         <div v-if="message" class="my-4 text-sm text-green-500" v-html="message"></div>
-      </Transition>
+      </Transition> -->
 
       <!-- Login button -->
-      <button class="flex items-center justify-center gap-4 my-6 text-lg">
+      <button type="submit" :disabled="isPending" :class="[
+        'flex items-center justify-center gap-4 my-6 text-lg w-full py-3 rounded-lg font-bold',
+        isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-800 hover:bg-gray-900 text-white'
+      ]">
         <LoadingIcon v-if="isPending" stroke="4" size="16" color="#fff" />
         <span>{{ buttonText }}</span>
       </button>
 
       <div class="flex items-center justify-between mt-4" v-if="formView === FormView.LOGIN">
         <!-- <div class="font-semibold cursor-pointer text-sm text-primary hover:text-primary" @click="navigate(FormView.FORGOT_PASSWORD)">Forgot password?</div> -->
-        <div class="font-semibold cursor-pointer text-sm text-primary hover:text-primary" >Forgot password?</div>
+        <!-- <div class="font-semibold cursor-pointer text-sm text-primary hover:text-primary">Forgot password?</div> -->
 
       </div>
     </form>
 
-    <div class="my-8 text-center cursor-pointer" @click="navigate(FormView.LOGIN)" v-if="formView === FormView.FORGOT_PASSWORD">
+    <div class="my-8 text-center cursor-pointer" @click="navigate(FormView.LOGIN)"
+      v-if="formView === FormView.FORGOT_PASSWORD">
       {{ $t('messages.account.backToLogin') }}
     </div>
 
@@ -61,10 +59,19 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref, computed, watch } from 'vue';
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
-const { loginUser, isPending, registerUser, sendResetPasswordEmail } = useAuth();
+import { useToast } from '../../composables/useToast'
+const toast = useToast()
+const { loginUser, isPending, registerUser, sendResetPasswordEmail, viewer } = useAuth();
+onMounted(() => {
+  if (viewer) {
+    router.push('/');
+  }
+});
+
 
 enum FormView {
   LOGIN = 'login',
@@ -93,22 +100,33 @@ watch(route, updateFormView, { immediate: true });
 
 const login = async (userInfo: UserInfo) => {
   const { success, error } = await loginUser(userInfo);
-  switch (error) {
-    case 'invalid_username':
-      errorMessage.value = t('messages.error.invalidUsername');
-      break;
-    case 'incorrect_password':
-      errorMessage.value = t('messages.error.incorrectPassword');
-      break;
-    default:
-      errorMessage.value = error ?? '';
-      break;
+  if (error) {
+    switch (error) {
+      case 'invalid_username':
+        // errorMessage.value = t('messages.error.invalidUsername');
+        toast.error("Email not found. Please check and try again.")
+        break;
+      case 'incorrect_password':
+        // errorMessage.value = t('messages.error.incorrectPassword');
+        toast.error("Incorrect password. Please try again.")
+        break;
+      default:
+        // errorMessage.value = error ?? '';
+        // toast.error(error || "Invalid email or password. Please try again.")
+        toast.error("Login failed. Please check your email and password and try again.");
+        break;
+    }
   }
 
   if (success) {
     errorMessage.value = '';
-    message.value = t('messages.account.loggingIn');
+    // message.value = t('messages.account.loggingIn');
+    toast.success('You have logged in successfully! 🎉');
+    setTimeout(() => {
+      router.push('/');
+    }, 2000);
   }
+
 };
 
 // // Pre-fill login credentials for testing
@@ -135,23 +153,33 @@ const login = async (userInfo: UserInfo) => {
 
 
 const handleFormSubmit = async (userInfo: UserInfo) => {
-  
-  // if (formView.value === FormView.REGISTER) {
-  //   const { success, error } = await registerUser(userInfo);
-  //   if (success) {
-  //     errorMessage.value = '';
-  //     message.value = t('messages.account.accountCreated') + ' ' + t('messages.account.loggingIn');
-  //     setTimeout(() => {
-  //       login(userInfo);
-  //     }, 2000);
-  //   } else {
-  //     errorMessage.value = error ?? '';
-  //   }
-  // } else if (formView.value === FormView.FORGOT_PASSWORD) {
-  //   resetPassword(userInfo);
-  // } else {
-  //   login(userInfo);
-  // }
+
+  if (formView.value === FormView.REGISTER) {
+    const username =  `${userInfo.username}${Math.random().toString(36).substring(2, 6)}`;
+    const registerPayload: UserInfo = {
+      ...userInfo,
+      username,
+    };
+    const { success, error } = await registerUser(registerPayload);
+    if (success) {
+      errorMessage.value = '';
+      // message.value = t('messages.account.accountCreated') + ' ' + t('messages.account.loggingIn');
+      toast.success("Your account has been created successfully!")
+      isPending.value = false;
+      setTimeout(() => {
+        // login(userInfo);
+        window.location.href = '/my-account';
+      }, 2000);
+    } else {
+      // errorMessage.value = error ?? '';
+      toast.error(error || "Registration failed. Please try again.")
+    }
+  } else if (formView.value === FormView.FORGOT_PASSWORD) {
+    resetPassword(userInfo);
+  } else {
+    login(userInfo);
+
+  }
 };
 
 const resetPassword = async (userInfo: UserInfo) => {
@@ -166,6 +194,9 @@ const resetPassword = async (userInfo: UserInfo) => {
 
 const navigate = (view: FormView) => {
   formView.value = view;
+  userInfo.value = { email: '', username: '', password: '' };
+  errorMessage.value = '';
+  message.value = '';
   if (view === FormView.FORGOT_PASSWORD) {
     router.push({ query: { action: 'forgotPassword' } });
   } else if (view === FormView.REGISTER) {

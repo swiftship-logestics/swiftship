@@ -12,27 +12,27 @@ const shipping = toRef(props, 'modelValue');
   <div class="grid w-full gap-4 lg:grid-cols-2">
     <div class="w-full">
       <label for="first-name">{{ $t('messages.billing.firstName') }}</label>
-      <input id="first-name" v-model="shipping.firstName" placeholder="John" autocomplete="given-name" type="text" required />
+      <input id="first-name" v-model="shipping.firstName" placeholder="Enter first name" autocomplete="given-name" type="text" required />
     </div>
 
     <div class="w-full">
       <label for="last-name">{{ $t('messages.billing.lastName') }}</label>
-      <input id="last-name" v-model="shipping.lastName" placeholder="Doe" autocomplete="family-name" type="text" required />
+      <input id="last-name" v-model="shipping.lastName" placeholder="Enter last name" autocomplete="family-name" type="text" />
     </div>
 
     <div class="w-full col-span-full">
       <label for="address1">{{ $t('messages.billing.address1') }}</label>
-      <input id="address1" v-model="shipping.address1" placeholder="O'Connell Street 47" autocomplete="street-address" type="text" required />
+      <input id="address1" v-model="shipping.address1" placeholder="Enter address 1" autocomplete="street-address" type="text" required />
     </div>
 
     <div class="w-full col-span-full">
       <label for="address2">{{ $t('messages.billing.address2') }} ({{ $t('messages.general.optional') }})</label>
-      <input id="address2" v-model="shipping.address2" placeholder="Apartment, studio, or floor" autocomplete="address-line2" type="text" />
+      <input id="address2" v-model="shipping.address2" placeholder="Enter address 2" autocomplete="address-line2" type="text" />
     </div>
 
     <div class="w-full">
       <label for="city">{{ $t('messages.billing.city') }}</label>
-      <input id="city" v-model="shipping.city" placeholder="New York" autocomplete="locality" type="text" required />
+      <input id="city" v-model="shipping.city" placeholder="Enter city" autocomplete="locality" type="text" required />
     </div>
 
     <div class="w-full">
@@ -47,12 +47,13 @@ const shipping = toRef(props, 'modelValue');
 
     <div class="w-full">
       <label for="zip">{{ $t('messages.billing.zip') }}</label>
-      <input id="zip" v-model="shipping.postcode" placeholder="10001" autocomplete="postal-code" type="text" required />
+      <input id="zip" v-model="shipping.postcode" placeholder="Enter postal code" autocomplete="postal-code" type="text" required />
     </div>
 
     <div class="w-full col-span-full">
-      <label for="phone">{{ $t('messages.billing.phone') }} ({{ $t('messages.general.optional') }})</label>
-      <input id="phone" v-model="shipping.phone" placeholder="+1 234 567 8901" autocomplete="tel" type="tel" />
+      <label for="phone">{{ $t('messages.billing.phone') }}({{ $t('messages.general.optional') }})
+        </label>
+      <input id="phone" v-model="shipping.phone" placeholder="Enter number" autocomplete="tel" type="tel" />
     </div>
   </div>
 </template>

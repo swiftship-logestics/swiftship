@@ -1,5 +1,6 @@
 import { createResolver } from '@nuxt/kit';
 import { defineNuxtConfig } from 'nuxt/config';
+import scrollBehavior from '../woonuxt_base/app/router.options'; 
 // import tsconfigPaths from 'vite-tsconfig-paths';
 
 const { resolve } = createResolver(import.meta.url);
@@ -93,4 +94,8 @@ export default defineNuxtConfig({
   //     allowedHosts: ['undefeatedly-noncompetent-buster.ngrok-free.dev'], // replace with your ngrok URL
   //   },
   // },
+
+   router: {
+      options: ({ scrollBehavior } as unknown as any), 
+    },
 });

@@ -31,7 +31,7 @@ const onFocusOut = () => {
 </script>
 
 <template>
-  <div class="flex rounded bg-white text-sm leading-none shadow-sm shadow-gray-200 isolate">
+  <!-- <div class="flex rounded bg-white text-sm leading-none shadow-sm shadow-gray-200 isolate">
     <button
       title="Decrease Quantity"
       aria-label="Decrease Quantity"
@@ -58,7 +58,7 @@ const onFocusOut = () => {
       :disabled="isUpdatingCart || hasNoMoreStock">
       <Icon name="ion:add" size="14" />
     </button>
-  </div>
+  </div> -->
 </template>
 
 <style scoped lang="postcss">

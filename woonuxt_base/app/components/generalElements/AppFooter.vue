@@ -22,13 +22,13 @@ const { wishlistLink } = useAuth();
           <div class="">
             <a href="/"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Home</a>
-            <a href="/"
+            <a href="/services"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Services</a>
-            <a href="/" class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">About
+            <a href="/about" class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">About
               us</a>
-            <a href="/"
+            <a href="/faq"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">FAQ</a>
-            <a href="/"
+            <a href="/tracking"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Tracking</a>
           </div>
         </div>
@@ -39,10 +39,10 @@ const { wishlistLink } = useAuth();
             </h3>
           </div>
           <div class="">
-            <a href="/"
+            <a href="/privacy-policy"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Privacy
               Policy</a>
-            <a href="/" class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Terms
+            <a href="/terms-use" class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Terms
               of Use</a>
             <a href="/"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Cookie
@@ -50,8 +50,8 @@ const { wishlistLink } = useAuth();
             <a href="/"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Shipping
               Policy</a>
-            <a href="/"
-              class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Tracking</a>
+            <!-- <a href="/"
+              class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Tracking</a> -->
           </div>
           <!-- <div class="text-sm">
             <NuxtLink to="/products" class="py-1.5 block text-white">{{ $t('messages.shop.newArrivals') }}</NuxtLink>
@@ -68,14 +68,14 @@ const { wishlistLink } = useAuth();
             </h3>
           </div>
           <div class="">
-            <a href="/"
+            <NuxtLink href="/#services"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Domestic
-              Delivery</a>
-            <a href="/"
+              Delivery</NuxtLink>
+            <NuxtLink href="/#services"
               class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Express
-              Delivery</a>
-            <a href="/" class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Bulk
-              & Business</a>
+              Delivery</NuxtLink>
+            <NuxtLink href="/#services" class="block text-[#FFFFFF] font-[Avenir] font-[400] text-[18px] leading-[29px] md:mt-[35px] mt-[20px]">Bulk
+              & Business</NuxtLink>
           </div>
           <!-- <div class="mb-1 font-semibold text-white">{{ $t('messages.general.customerService') }}</div> -->
           <!-- <div class="text-sm">

@@ -6,6 +6,8 @@ import type {
   ResetPasswordEmailMutationVariables,
   ResetPasswordKeyMutationVariables,
 } from '#gql';
+import { useToast } from '../composables/useToast';
+const toast = useToast();
 
 export const useAuth = () => {
   const { refreshCart } = useCart();
@@ -82,12 +84,13 @@ export const useAuth = () => {
   async function logoutUser(): Promise<AuthResponse> {
     isPending.value = true;
     try {
-      // const { logout } = await GqlLogout();
-      // if (logout) {
-      //   await refreshCart();
-      //   clearAllCookies();
-      //   customer.value = { billing: {}, shipping: {} };
-      // }
+      const { logout } = await GqlLogout();
+      if (logout) {
+        await refreshCart();
+        clearAllCookies();
+        customer.value = { billing: {}, shipping: {} };
+      }
+
       return { success: true };
     } catch (error: any) {
       const errorMsg = getErrorMessage(error);
@@ -109,6 +112,7 @@ export const useAuth = () => {
       return { success: true };
     } catch (error: any) {
       const errorMsg = getErrorMessage(error);
+      //  const errorMsg = error?.response?.errors?.[0]?.message || "An unknown error occurred.";
       isPending.value = false;
       return { success: false, error: errorMsg };
     }

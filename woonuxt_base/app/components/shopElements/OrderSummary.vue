@@ -10,19 +10,19 @@ const { cart, isUpdatingCart } = useCart();
       <CartCard v-for="item in cart.contents.nodes" :key="item.key" :item />
     </ul>
 
-    <AddCoupon class="my-8" />
+    <!-- <AddCoupon class="my-8" /> -->
 
     <div class="grid gap-1 text-sm font-semibold text-gray-500">
       <div class="flex justify-between">
         <span>{{ $t('messages.shop.subtotal') }}</span>
         <span class="text-gray-700 tabular-nums" v-html="cart.subtotal" />
       </div>
-      <div class="flex justify-between">
+      <!-- <div class="flex justify-between">
         <span>{{ $t('messages.general.shipping') }}</span>
         <span class="text-gray-700 tabular-nums">
           {{ parseFloat(cart.shippingTotal) > 0 ? '+' : '' }} <span v-html="cart.shippingTotal"></span>
         </span>
-      </div>
+      </div> -->
       <Transition name="scale-y" mode="out-in">
         <div v-if="cart && cart.appliedCoupons" class="flex justify-between">
           <span>{{ $t('messages.shop.discount') }}</span>

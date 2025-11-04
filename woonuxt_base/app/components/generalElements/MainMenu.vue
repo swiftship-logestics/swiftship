@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useFetch } from '#app';
 import { useRouter } from "vue-router";
-
+const { viewer, logoutUser, isPending } = useAuth();
 interface MenuData {
   content: {
     rendered: string;
@@ -135,12 +135,25 @@ router.afterEach(() => {
         </NuxtLink>
         <div
           class="flex items-center gap-[10px] text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal cursor-pointer">
-          <span class="icon">
-            <img src="/images/user_icon.svg" />
-          </span>
-          <NuxtLink to="/my-account">Sign in</NuxtLink>
-          <span>/</span>
-          <NuxtLink to="/my-account?action=register">Register</NuxtLink>
+          <template v-if="viewer">
+            <!-- <span class="icon">
+              <img src="/images/user_icon.svg" />
+            </span>
+             <span class="mr-2">Welcome, {{ viewer.firstName }}!</span> -->
+            <button @click="logoutUser"
+              class="text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal hover:text-red-600">
+              <span v-if="isPending">Logging out...</span>
+              <span v-else>Logout</span>
+            </button>
+          </template>
+          <template v-else>
+            <span class="icon">
+              <img src="/images/user_icon.svg" />
+            </span>
+            <NuxtLink to="/my-account">Sign in</NuxtLink>
+            <span>/</span>
+            <NuxtLink to="/my-account?action=register">Register</NuxtLink>
+          </template>
         </div>
       </div>
       <div class="md:flex items-center justify-between w-full pt-[16px] hidden">
@@ -196,6 +209,18 @@ router.afterEach(() => {
               Track your order
             </span>
           </NuxtLink>
+          <template v-if="viewer">
+            <!-- <span class="icon">
+              <img src="/images/user_icon.svg" />
+            </span>
+             <span class="mr-2">Welcome, {{ viewer.firstName }}!</span> -->
+            <button @click="logoutUser"
+              class="text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal hover:text-red-600">
+              <span v-if="isPending">Logging out...</span>
+              <span v-else>Logout</span>
+            </button>
+          </template>
+          <template v-else >
           <div
             class="flex items-center gap-[10px] text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal cursor-pointer">
             <span class="icon">
@@ -205,6 +230,7 @@ router.afterEach(() => {
             <span>/</span>
             <NuxtLink to="/my-account?action=register">Register</NuxtLink>
           </div>
+          </template>
         </div>
         <NuxtLink :to="menuItems.button.href"
           class="block mt-[30px] bg-[#248BC6] text-white rounded-[6px] font-[PingLCG] font-[500] lg:text-[16px] text-[15px] leading-normal lg:px-[36px] px-[24px] lg:py-[16px] py-[12px] lg:h-[57px] h-auto border border-[#248BC6] hover:bg-white hover:border-[#14141633] hover:text-[#141416] cursor-pointer text-center">
