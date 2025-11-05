@@ -66,12 +66,6 @@ const router = useRouter();
 import { useToast } from '../../composables/useToast'
 const toast = useToast()
 const { loginUser, isPending, registerUser, sendResetPasswordEmail, viewer } = useAuth();
-onMounted(() => {
-  if (viewer) {
-    router.push('/');
-  }
-});
-
 
 enum FormView {
   LOGIN = 'login',
