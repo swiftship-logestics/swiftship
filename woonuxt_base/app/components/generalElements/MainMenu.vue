@@ -140,10 +140,17 @@ router.afterEach(() => {
               <img src="/images/user_icon.svg" />
             </span>
              <span class="mr-2">Welcome, {{ viewer.firstName }}!</span> -->
+            <NuxtLink to="/my-account" class="flex items-center gap-[6px] mr-[16px] hover:text-[#2689C6]">
+              <span class="icon">
+                <img src="/images/user_icon.svg" alt="Profile" />
+              </span>
+              <span>Dashboard</span>
+            </NuxtLink>
             <button @click="logoutUser"
-              class="text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal hover:text-red-600">
-              <span v-if="isPending">Logging out...</span>
-              <span v-else>Logout</span>
+              class="flex items-center gap-2 text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal hover:text-red-600">
+               <LoadingIcon v-if="isPending" size="22" />
+              <Icon v-else name="ion:log-out-outline" size="22" />
+              {{ $t('messages.account.logout') }}
             </button>
           </template>
           <template v-else>
@@ -214,22 +221,29 @@ router.afterEach(() => {
               <img src="/images/user_icon.svg" />
             </span>
              <span class="mr-2">Welcome, {{ viewer.firstName }}!</span> -->
-            <button @click="logoutUser"
-              class="text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal hover:text-red-600">
-              <span v-if="isPending">Logging out...</span>
-              <span v-else>Logout</span>
+            <NuxtLink to="/my-account" class="flex items-center gap-[6px] hover:text-[#2689C6]">
+              <span class="icon">
+                <img src="/images/user_icon.svg" alt="Profile" />
+              </span>
+              <span>Dashboard</span>
+            </NuxtLink>
+             <button @click="logoutUser"
+              class="flex items-center gap-2 text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal hover:text-red-600">
+               <LoadingIcon v-if="isPending" size="22" />
+              <Icon v-else name="ion:log-out-outline" size="22" />
+              {{ $t('messages.account.logout') }}
             </button>
           </template>
-          <template v-else >
-          <div
-            class="flex items-center gap-[10px] text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal cursor-pointer">
-            <span class="icon">
-              <img src="/images/user_icon.svg" />
-            </span>
-            <NuxtLink to="/my-account">Sign in</NuxtLink>
-            <span>/</span>
-            <NuxtLink to="/my-account?action=register">Register</NuxtLink>
-          </div>
+          <template v-else>
+            <div
+              class="flex items-center gap-[10px] text-[#141416] font-[PingLCG] font-[700] text-[14px] leading-normal cursor-pointer">
+              <span class="icon">
+                <img src="/images/user_icon.svg" />
+              </span>
+              <NuxtLink to="/my-account">Sign in</NuxtLink>
+              <span>/</span>
+              <NuxtLink to="/my-account?action=register">Register</NuxtLink>
+            </div>
           </template>
         </div>
         <NuxtLink :to="menuItems.button.href"
