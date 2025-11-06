@@ -227,6 +227,7 @@ const postcodeMap: Record<number, string> = {
 
 
 
+
 const bookNow = async () => {
     if (booking.value) return;
     booking.value = true;
@@ -259,6 +260,7 @@ Signature: ${signatureOnDelivery.value ? 'Yes' : 'No'}
 `,
         status: 'publish'
     }
+
 
     try {
         const response = await $fetch('/api/create-product', {
@@ -389,7 +391,7 @@ const submitQuote = async () => {
     loading.value = true
 
     const body = {
-        // frompostcode: selectedFrom.value,
+        // frompostcode: selectedFrom.value ,
         postcode: selectedTo.value,
         weight: weight.value,
         length: length.value,
