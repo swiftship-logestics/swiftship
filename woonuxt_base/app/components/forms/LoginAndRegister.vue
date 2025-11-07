@@ -65,7 +65,7 @@ const route = useRoute();
 const router = useRouter();
 import { useToast } from '../../composables/useToast'
 const toast = useToast()
-const { loginUser, isPending, registerUser, sendResetPasswordEmail, viewer } = useAuth();
+const { loginUser, logoutUser, isPending, registerUser, sendResetPasswordEmail, viewer } = useAuth();
 
 enum FormView {
   LOGIN = 'login',
@@ -160,6 +160,7 @@ const handleFormSubmit = async (userInfo: UserInfo) => {
       // message.value = t('messages.account.accountCreated') + ' ' + t('messages.account.loggingIn');
       toast.success("Your account has been created successfully!")
       isPending.value = false;
+      await logoutUser();
       setTimeout(() => {
         // login(userInfo);
         window.location.href = '/my-account';
