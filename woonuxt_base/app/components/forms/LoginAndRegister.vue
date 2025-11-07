@@ -160,7 +160,6 @@ const handleFormSubmit = async (userInfo: UserInfo) => {
       // message.value = t('messages.account.accountCreated') + ' ' + t('messages.account.loggingIn');
       toast.success("Your account has been created successfully!")
       isPending.value = false;
-      await logoutUser();
       setTimeout(() => {
         // login(userInfo);
         window.location.href = '/my-account';

@@ -11,14 +11,14 @@ useSeoMeta({
 });
 </script>
 
-<template>
+<!-- <template>
   <div class="container min-h-[600px]">
     <LazyLoginAndRegister />
   </div>
-</template>
+</template> -->
 
 
-<!-- 
+
 <template>
   <div class="container min-h-[600px]">
     <div v-if="showLoader" class="fixed inset-0 bg-white flex items-center justify-center z-50">
@@ -67,7 +67,7 @@ useSeoMeta({
               Track Order
             </NuxtLink>
           </nav>
-          <template class="hidden lg:block">
+          <!-- <template class="hidden lg:block">
             <hr class="my-8" />
             <button
               class="flex text-gray-700 items-center gap-4 p-2 px-4 w-full rounded-lg hover:bg-white hover:text-red-700"
@@ -76,7 +76,7 @@ useSeoMeta({
               <Icon v-else name="ion:log-out-outline" size="22" />
               {{ $t('messages.account.logout') }}
             </button>
-          </template>
+          </template> -->
         </div>
 
         <main class="flex-1 w-full lg:my-8 rounded-lg max-w-screen-lg lg:sticky top-24">
@@ -89,7 +89,7 @@ useSeoMeta({
       </div>
     </template>
   </div>
-</template> -->
+</template>
 
 <style lang="postcss" scoped>
 nav a {
