@@ -173,8 +173,6 @@ const payNow = async () => {
     toast.error("Checkout failed. Please try again.");
   } finally {
     isProcessingOrder.value = false;
-  console.log("isProcessingOrder.value:%6u767557::",isProcessingOrder.value);
-
     buttonText.value = t('messages.shop.checkoutButton');
   }
 };
