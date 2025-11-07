@@ -37,7 +37,7 @@ export function useCheckout() {
 
       if (updateCustomer) await refreshCart();
     } catch (error) {
-      console.error('Error updating shipping location:', error);
+      // console.error('Error updating shipping location:', error);
     } finally {
       isUpdatingCart.value = false;
     }
@@ -322,23 +322,17 @@ export function useCheckout() {
     const { shipToDifferentAddress, createAccount } = orderInput.value;
     let username = orderInput.value.username;
     let password = orderInput.value.password;
-
+    const firstName = customer.value?.billing?.firstName?.trim() || '';
+    const email = customer.value?.billing?.email?.trim() || customer.value?.email?.trim() || '';
     if (orderInput.value.createAccount) {
       const billing = customer.value?.billing || {};
 
-      const firstName = billing.firstName?.trim() || '';
-      const email = billing.email?.trim() || customer.value?.email?.trim() || '';
+      // const firstName = billing.firstName?.trim() || '';
+      // const email = billing.email?.trim() || customer.value?.email?.trim() || '';
 
       const randomSuffix = Math.random().toString(36).substring(2, 8);
       username = `${firstName.toLowerCase() || email.split('@')[0]}${randomSuffix}`;
       orderInput.value.username = username;
-
-      // if (!username) {
-      //   username = firstName.toLowerCase() || email.split('@')[0];
-      //   orderInput.value.username = username;
-      // }
-
-
 
       if (!password) {
         password = Math.random().toString(36).slice(-8);
@@ -387,7 +381,7 @@ export function useCheckout() {
         await $fetch('/api/send-user-account-email', {
           method: 'POST',
           body: {
-            username,
+            username: firstName,
             email,
             password
           }
