@@ -2,9 +2,34 @@
 <script setup>
 import { useFetch } from '#app'
 import { NuxtLink } from '#components';
+import { useToast } from '../composables/useToast'
+const toast = useToast()
+// const { data, pending, error } = await useFetch('/api/page')
+const trackingID = ref('')
+const trackingURL = ref('');
+const iframeLoading = ref(true);
 
-const { data, pending, error } = await useFetch('/api/page')
+const openTracking = () => {
+    if (!trackingID.value) return toast.error('Please enter a tracking ID')
+    trackingURL.value = `https://app.tookanapp.com/tracking/index.html?jobID=${trackingID.value}`;
+    // const url = `https://app.tookanapp.com/tracking/index.html?jobID=${trackingID.value}`
+    // window.open(url, '_blank')
+    const iframeSection = document.querySelector('.tracking-iframe-container');
+    if (iframeSection) {
+        iframeSection.scrollIntoView({ behavior: 'smooth' });
+    }
 
+    iframeLoading.value = true;
+}
+
+const iframeLoaded = () => {
+    iframeLoading.value = false;
+
+    const iframeSection = document.querySelector('.tracking-iframe-container');
+    if (iframeSection) {
+        iframeSection.scrollIntoView({ behavior: 'smooth' });
+    }
+};
 </script>
 
 <template>
@@ -24,14 +49,15 @@ const { data, pending, error } = await useFetch('/api/page')
                                 class="text-[#FFFFFF] font-[Avenir] font-[400] md:text-[20px] text-[18px] md:leading-[34px] leading-[29px] mt-[14px] mb-[30px]">
                                 Track your Shipment now
                             </p>
-                            <form class="w-full">
+                            <form class="w-full" @submit.prevent="openTracking">
                                 <label class="relative block w-full">
-                                    <input type="text" name="trackingID" placeholder="Enter Tracking ID here...."
+                                    <input type="text" v-model="trackingID" name="trackingID"
+                                        placeholder="Enter Tracking ID here...."
                                         class="w-full border border-[#FFFFFF] br-[#FFFFFF] md:px-[25px] sm:px-[20px] px-[15px] md:py-[14px] py-[10px] text-[#151515] text-[16px] font-[400] font-[Avenir] leading-[28px] placeholder:text-[#818181] rounded-[6px] w-full" />
-                                    <NuxtLink
+                                    <button type="submit"
                                         class="absolute md:right-[9px] right-[5px] top-[50%] translate-y-[-50%] bg-[#248BC6] text-white rounded-[6px] font-[PingLCG] font-[500] text-[16px] leading-normal md:px-[36px] sm:px-[22px] px-[18px] md:py-[10px] py-[8px] h-auto border border-[#248BC6] hover:bg-white hover:border-[#14141633] hover:text-[#141416] cursor-pointer text-center block w-full max-w-[fit-content]">
                                         Get a Quote
-                                    </NuxtLink>
+                                    </button>
                                 </label>
                             </form>
                         </div>
@@ -59,6 +85,15 @@ const { data, pending, error } = await useFetch('/api/page')
             </div>
         </section>
 
+        <section>
+
+            <div v-if="trackingURL" class="tracking-iframe-container flex justify-center mb-8">
+
+                <iframe :src="trackingURL" width="70%" height="500px" frameborder="0" title="Tracking Info"
+                    class="border border-[#248BC6] rounded-lg" @load="iframeLoaded"></iframe>
+            </div>
+        </section>
+
         <section class="bg-[#248BC6] lg:py-[90px] py-[50px] w-full">
             <div class="container">
                 <div class="flex flex-col items-center justify-center mx-auto max-w-[1090px]">
@@ -68,7 +103,8 @@ const { data, pending, error } = await useFetch('/api/page')
                     </p>
                     <h2
                         class="mt-[10px] text-center text-[#FFFFFF] font-[PingLCG] font-[800] lg:text-[48px] md:text-[40px] text-[30px] lg:leading-[66px] md:leading-[56px] leading-[46px]">
-                        Raise a <span class="text-[#141416]">query below</span>, and our representative will get in touch with you shortly regarding your complaint.
+                        Raise a <span class="text-[#141416]">query below</span>, and our representative will get in
+                        touch with you shortly regarding your complaint.
                     </h2>
                     <NuxtLink
                         class="px-4 py-2 bg-transparent text-white rounded-[6px] font-[PingLCG] font-[500] text-[16px] leading-normal lg:px-[36px] md:px-[30px] px-[26px] lg:py-[16px] py-[12px] lg:h-[57px] h-auto border border-[#ffffff30] hover:bg-white hover:border-[#fff] hover:text-[#141416] cursor-pointer mt-[25px]">

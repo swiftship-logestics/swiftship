@@ -28,46 +28,62 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full overflow-x-auto">
-    <div v-if="isLoading" class="flex justify-center py-12">
-      <LoadingIcon />
+  <div class="bg-white rounded-lg flex shadow min-h-[250px] p-4 md:p-12 justify-center items-center">
+    <LoadingIcon  v-if="isLoading" size="24" stroke="2" />
+    <div v-else-if="orders.length > 0">
+      <table class="w-full text-left table-auto" aria-label="Order List">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Delivery Job ID</th>
+            <th>Pickup Job ID</th>
+            <th>Delivery Tracking</th>
+            <th>Pickup Tracking</th>
+            <th >Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="order in orders" :key="order.id" class="cursor-pointer hover:underline">
+            <td class="rounded-l-lg">{{ order.id }}</td>
+            <td>{{ order.meta_data?.tookan_job_id || '-' }}</td>
+            <td>{{ order.meta_data?.tookan_pickup_job_id || '-' }}</td>
+            <td>
+              <a v-if="order.meta_data?.tookan_delivery_tracing_link"
+                :href="order.meta_data.tookan_delivery_tracing_link" target="_blank" class="text-blue-600 underline">
+                Track
+              </a>
+              <span v-else>-</span>
+            </td>
+            <td>
+              <a v-if="order.meta_data?.tookan_pickup_tracking_link" :href="order.meta_data.tookan_pickup_tracking_link"
+                target="_blank" class="text-blue-600 underline">
+                Track
+              </a>
+              <span v-else>-</span>
+            </td>
+            <td class="rounded-r-lg">{{ formatDate(order.date_created) }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div v-else-if="error" class="text-red-500 py-4">{{ error }}</div>
-    <table v-else class="min-w-full border border-gray-200 rounded-lg overflow-hidden bg-white">
-      <thead class="bg-gray-100 text-left">
-        <tr>
-          <th class="px-4 py-2">Order ID</th>
-          <th class="px-4 py-2">Delivery Job ID</th>
-          <th class="px-4 py-2">Pickup Job ID</th>
-          <th class="px-4 py-2">Delivery Tracking</th>
-          <th class="px-4 py-2">Pickup Tracking</th>
-          <th class="px-4 py-2">Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="order in orders" :key="order.id" class="border-t border-gray-200">
-          <td class="px-4 py-2">{{ order.id }}</td>
-          <td class="px-4 py-2">{{ order.meta_data?.tookan_job_id || '-' }}</td>
-          <td class="px-4 py-2">{{ order.meta_data?.tookan_pickup_job_id || '-' }}</td>
-          <td class="px-4 py-2">
-            <a v-if="order.meta_data?.tookan_delivery_tracing_link" 
-               :href="order.meta_data.tookan_delivery_tracing_link" 
-               target="_blank" class="text-blue-600 underline">
-               Track
-            </a>
-            <span v-else>-</span>
-          </td>
-          <td class="px-4 py-2">
-            <a v-if="order.meta_data?.tookan_pickup_tracking_link" 
-               :href="order.meta_data.tookan_pickup_tracking_link" 
-               target="_blank" class="text-blue-600 underline">
-               Track
-            </a>
-            <span v-else>-</span>
-          </td>
-          <td class="px-4 py-2">{{ formatDate(order.date_created) }}</td>
-        </tr>
-      </tbody>
-    </table>
+     <div v-else
+        class="min-h-[250px] flex items-center justify-center text-gray-500 text-lg">
+        No Tickets found.
+      </div>
   </div>
 </template>
+
+<style lang="postcss" scoped>
+tbody tr:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+tbody tr {
+  @apply text-sm text-gray-500 hover:text-gray-800;
+}
+
+td,
+th {
+  @apply py-2 px-3;
+}
+</style>

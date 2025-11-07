@@ -19,8 +19,8 @@
       </div>
 
       <div class="w-full">
-        <label for="email">{{ $t('messages.billing.email') }}</label>
-        <input id="email" v-model="customer.email" placeholder="Enter gmail" autocomplete="email" type="email" />
+        <label for="email">{{ $t('messages.billing.email') }} ({{ $t('messages.general.readOnly') }})</label>
+        <input id="email" v-model="customer.email" placeholder="Enter gmail" autocomplete="email" type="email" readonly />
       </div>
     </div>
     <div class="bg-white backdrop-blur-sm bg-opacity-75 border-t col-span-full p-4 sticky bottom-0 rounded-b-lg">
