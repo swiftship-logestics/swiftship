@@ -79,7 +79,7 @@ const message = ref<string>('');
 const errorMessage = ref<string>('');
 
 const updateFormView = () => {
-  // Reset error message on view changes
+  // Reset error message on view change
   errorMessage.value = '';
 
   if (route.query.action === FormView.FORGOT_PASSWORD) {
