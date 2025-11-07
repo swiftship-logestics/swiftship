@@ -1,75 +1,82 @@
+<script setup>
+import { useFetch } from '#app'
+import { NuxtLink } from '#components';
+
+const { data, pending, error } = await useFetch('/api/page')
+
+</script>
+
 <template>
-  <main class="container">
-    <div class="prose max-w-full my-8">
-      <h1>Privacy Policy</h1>
-      <h2>Who we are</h2>
-      <p>
-        Our website address is: https://v3.woonuxt.com. <br />
-        <span class="text-red-600">(This is a demo site and not a real business.)</span>
-      </p>
-      <h2>What personal data we collect and why we collect it</h2>
-      <h3>Comments</h3>
-      <p>
-        When visitors leave comments on the site we collect the data shown in the comments form, and also the visitor's IP address and browser user agent string
-        to help spam detection.
-      </p>
-      <p>
-        An anonymized string created from your email address (also called a hash) may be provided to the Gravatar service to see if you are using it. The
-        Gravatar service privacy policy is available here: https://automattic.com/privacy/. After approval of your comment, your profile picture is visible to
-        the public in the context of your comment.
-      </p>
-      <h3>Media</h3>
-      <p>
-        If you upload images to the website, you should avoid uploading images with embedded location data (EXIF GPS) included. Visitors to the website can
-        download and extract any location data from images on the website.
-      </p>
-      <h3>Contact forms</h3>
-      <h3>Cookies</h3>
-      <p>
-        If you leave a comment on our site you may opt-in to saving your name, email address and website in cookies. These are for your convenience so that you
-        do not have to fill in your details again when you leave another comment. These cookies will last for one year.
-      </p>
-      <p>
-        If you visit our login page, we will set a temporary cookie to determine if your browser accepts cookies. This cookie contains no personal data and is
-        discarded when you close your browser.
-      </p>
-      <p>
-        When you log in, we will also set up several cookies to save your login information and your screen display choices. Login cookies last for two days,
-        and screen options cookies last for a year. If you select "Remember Me", your login will persist for two weeks. If you log out of your account, the
-        login cookies will be removed.
-      </p>
-      <p>
-        If you edit or publish an article, an additional cookie will be saved in your browser. This cookie includes no personal data and simply indicates the
-        post ID of the article you just edited. It expires after 1 day.
-      </p>
-      <h3>Embedded content from other websites</h3>
-      <p>
-        Articles on this site may include embedded content (e.g. videos, images, articles, etc.). Embedded content from other websites behaves in the exact same
-        way as if the visitor has visited the other website.
-      </p>
-      <p>
-        These websites may collect data about you, use cookies, embed additional third-party tracking, and monitor your interaction with that embedded content,
-        including tracking your interaction with the embedded content if you have an account and are logged in to that website.
-      </p>
-      <h3>Analytics</h3>
-      <h2>Who we share your data with</h2>
-      <h2>How long we retain your data</h2>
-      <p>
-        If you leave a comment, the comment and its metadata are retained indefinitely. This is so we can recognize and approve any follow-up comments
-        automatically instead of holding them in a moderation queue.
-      </p>
-      <p>
-        For users that register on our website (if any), we also store the personal information they provide in their user profile. All users can see, edit, or
-        delete their personal information at any time (except they cannot change their username). Website administrators can also see and edit that information.
-      </p>
-      <h2>What rights you have over your data</h2>
-      <p>
-        If you have an account on this site, or have left comments, you can request to receive an exported file of the personal data we hold about you,
-        including any data you have provided to us. You can also request that we erase any personal data we hold about you. This does not include any data we
-        are obliged to keep for administrative, legal, or security purposes.
-      </p>
-      <h2>Where we send your data</h2>
-      <p>Visitor comments may be checked through an automated spam detection service.</p>
+    <div class="main-content bg-white">
+
+        <section class="policies_text">
+            <div class="container-terms">
+                <h2>Terms and Conditions</h2>
+                <p>At SwiftShip Logistics Pvt. Ltd., we are committed to protecting your privacy and ensuring that your personal data is handled in a safe and responsible manner. 
+                This Privacy Policy outlines the types of personal information we collect, how we use it, and how we protect it when you use our platforms, including swiftshiplogistics.com, direct swiftshiplogistics.com, the SwiftShip Direct Mobile App, and the SwiftShip Partner App. By using our Platforms or providing us with your personal data, you agree to the terms of this Privacy Policy. We encourage you to review it carefully and regularly to stay informed about any changes.</p>
+                <h3>Information We Collect</h3>
+                <p>We collect both Personal Information and Non-Personal Information when you use our Platforms. This information is collected when you:</p>
+                <ul>
+                    <li>Register or create an account on the Platforms.</li>
+                    <li>Place an order or request services.</li>
+                    <li>Communicate with us via email, phone, or through our customer service team.</li>
+                    <li>Participate in surveys, promotions, or feedback requests.</li>
+                </ul>
+                <h3>Personal Information</h3>
+                <p>Personal data refers to any information that can be used to identify you personally. The types of personal data we collect include:</p>
+                <ul>
+                    <li><b>Contact Information:</b>  Name, email address, phone number, shipping and billing addresses.</li>
+                    <li><b>Account Information:</b> Username, password, and other details associated with your account.</li>
+                    <li><b>Transaction Information:</b> Order details, payment information, billing information, and delivery preferences.</li>
+                    <li><b>Communication Data:</b> Messages, feedback, and any other communications you send us.</li>
+                    <li><b>Referral Information:</b> Details of referrals you make through any referral programs.</li>
+                </ul>
+                <h3>Non-Personal Information</h3>
+                <p>This refers to data that cannot directly identify you. We collect non-personal information to help improve the functionality of our Platforms. Examples include:</p>
+                <ul>
+                    <li><b>Technical Data:</b> Device type, IP address, browser type, and operating system.</li>
+                    <li><b>Usage Data:</b> How you interact with the Platforms, pages visited, time spent on the Platforms, and search queries.</li>
+                </ul>
+                <h3>Non-Personal Information</h3>
+                <p>This refers to data that cannot directly identify you. We collect non-personal information to help improve the functionality of our Platforms. Examples include:</p>
+                <ul>
+                    <li>
+                        <b>Technical Data:</b> Device type, IP address, browser type, and operating system.
+                    </li>
+                    <li>
+                        <b>Usage Data:</b> How you interact with the Platforms, pages visited, time spent on the Platforms, and search queries.
+                    </li>
+                </ul>
+                <h3>How We Use Your Information</h3>
+                <p>We use the information we collect for the following purposes:</p>
+                <ul>
+                    <li>
+                        <b>To Provide Services:</b> Process orders, payments, deliveries, and communicate with you about your transactions.
+                    </li>
+                    <li>
+                        <b>Customer Support:</b> Respond to your inquiries, resolve issues, and improve our customer service experience.
+                    </li>
+                    <li>
+                        <b>Improve Our Platforms:</b> Analyze usage patterns to enhance the functionality and usability of our Platforms.
+                    </li>
+                    <li><b>Marketing and Promotions:</b> Send you promotional messages, newsletters, and updates related to SwiftShip’s services. You may opt-out of receiving marketing communications at any time.</li>
+                </ul>
+                <h3>Security of Your Information</h3>
+                <p>We take appropriate technical and organizational measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction. These measures include encryption, firewalls, and secure servers.
+                However, please note that no method of transmission over the internet or method of electronic storage is completely secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee absolute security.</p>
+                <h3>Cookies and Tracking Technologies</h3>
+                <p>We take appropriate technical and organizational measures to protect your personal information from unauthorized access, alteration, disclosure, or destruction. These measures include encryption, firewalls, and secure servers.
+                However, please note that no method of transmission over the internet or method of electronic storage is completely secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee absolute security.</p>
+            </div>
+        </section>
+
+        
+
+        <!-- Loading state -->
+        <div v-if="pending" class="text-center text-gray-500">Loading...</div>
+        <!-- Error state -->
+        <div v-if="error" class="text-center text-red-500 font-semibold">
+            Error: {{ error.message }}
+        </div>
     </div>
-  </main>
 </template>
