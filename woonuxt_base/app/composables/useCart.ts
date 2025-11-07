@@ -137,7 +137,7 @@ export function useCart() {
     
     } catch (error: any) {
       const errorMsg = getErrorMessage(error);
-      console.error('Error emptying cart:', errorMsg);
+      // console.error('Error emptying cart:', errorMsg);
     } finally {
       isUpdatingCart.value = false;
     }
