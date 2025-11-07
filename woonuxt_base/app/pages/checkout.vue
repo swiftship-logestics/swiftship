@@ -130,7 +130,7 @@ const payNow = async () => {
             job_pickup_longitude: 0,
             job_pickup_datetime: new Date().toISOString(),
 
-            // Delivery info
+            // Delivery in fo
             customer_username: `${shippingInfo?.firstName || ''} ${shippingInfo?.lastName || ''}`.trim(),
             customer_email: shippingInfo?.email || '',
             customer_phone: shippingInfo?.phone || '',
@@ -165,7 +165,6 @@ const payNow = async () => {
         }
 
         window.location.href = `/thank-you?orderId=${orderResult.databaseId}`;
-
       }
     }
   } catch (err) {
