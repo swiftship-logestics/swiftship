@@ -117,7 +117,7 @@ const login = async (userInfo: UserInfo) => {
     // message.value = t('messages.account.loggingIn');
     toast.success('You have logged in successfully! 🎉');
     setTimeout(() => {
-      router.push('/');
+      window.location.href = '/';
     }, 2000);
   }
 

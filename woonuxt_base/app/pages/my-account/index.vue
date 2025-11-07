@@ -11,15 +11,15 @@ useSeoMeta({
 });
 </script>
 
-<!-- <template>
+<template>
   <div class="container min-h-[600px]">
     <LazyLoginAndRegister />
   </div>
-</template> -->
+</template>
 
 
 
-<template>
+<!-- <template>
   <div class="container min-h-[600px]">
     <div v-if="showLoader" class="fixed inset-0 bg-white flex items-center justify-center z-50">
       <div class="flex flex-col items-center">
@@ -77,7 +77,9 @@ useSeoMeta({
               {{ $t('messages.account.logout') }}
             </button>
           </template> -->
-        </div>
+
+
+        <!-- </div>
 
         <main class="flex-1 w-full lg:my-8 rounded-lg max-w-screen-lg lg:sticky top-24">
           <AccountMyDetails v-if="activeTab === 'my-details'" :user="viewer" />
@@ -89,7 +91,7 @@ useSeoMeta({
       </div>
     </template>
   </div>
-</template>
+</template> --> 
 
 <style lang="postcss" scoped>
 nav a {
