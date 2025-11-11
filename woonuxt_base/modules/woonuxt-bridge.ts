@@ -11,7 +11,7 @@ type EnvSpec = {
 const REQUIRED_ENV: EnvSpec[] = [
   {
     key: 'GQL_HOST',
-    hint: 'Format: https://your-site.com/graphql',
+    hint: 'Format: https://swiftshiplogistics.com.au/wp-admin/graphql',
   },
   {
     key: 'NUXT_IMAGE_DOMAINS',

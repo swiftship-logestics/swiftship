@@ -26,6 +26,7 @@ const goToOrder = (orderNumber: string): void => {
             <th>{{ $t('messages.general.date') }}</th>
             <th>{{ $t('messages.general.status') }}</th>
             <th class="text-right">{{ $t('messages.shop.total') }}</th>
+            <th class="text-center">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +35,15 @@ const goToOrder = (orderNumber: string): void => {
             <td>{{ formatDate(order.date) }}</td>
             <td><OrderStatusLabel v-if="order.status" :order="order" /></td>
             <td class="text-right rounded-r-lg" v-html="order.total"></td>
+            <td class="text-center rounded-r-lg" @click.stop>
+              <button
+                type="button"
+                class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 font-medium"
+                @click="goToOrder(order.orderNumber)"
+              >
+                View
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>

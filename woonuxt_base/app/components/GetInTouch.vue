@@ -1,5 +1,9 @@
 <script setup>
 import { NuxtLink } from '#components';
+const props = defineProps({
+  acfData: Object,
+  acfImages: Object
+})
 
 </script>
 
@@ -9,34 +13,37 @@ import { NuxtLink } from '#components';
         <div class="flex flex-wrap justify-between lg:gap-[152px] gap-[50px] items-center">
           <div class="w-full lg:max-w-[calc(50%_-76px)] max-w-[100%]">
             <span class="text-[#248BC6] font-[Avenir] font-[700] text-[18px] leading-[34px] uppercase">
-              Lets connected
+              <!-- Lets connected -->
+               {{ acfData.get_in_touch?.lets_connected?.heading }}
             </span>
             <h2 class="text-[#141416] font-[PingLCG] font-[800] lg:text-[44px] md:text-[30px] text-[28px] lg:leading-[58px] md:leading-[40px] leading-[normal] mt-[8px] w-full lg:max-w-[420px]">
-              Have questions or need assistance?
+              <!-- Have questions or need assistance? -->
+               {{ acfData.get_in_touch?.lets_connected?.title }}
             </h2>
             <p class="text-[#141416] font-[Avenir] font-[400] md:text-[18px] text-[16px] md:leading-[29px] leading-[26px] mt-[20px]">
-              We’re here to help! Fill out the form below, and our team will get back to you as soon as possible
+              <!-- We’re here to help! Fill out the form below, and our team will get back to you as soon as possible -->
+            {{ acfData.get_in_touch?.lets_connected?.description }}
             </p>
             <ul class="flex flex-col gap-[22px] mt-[40px]">
               <li>
-                <a href="tel:813-405-1455"
+                <a :href="`tel:${acfData.get_in_touch?.lets_connected?.phone_number}`"
                   class="flex items-center gap-[15px] text-[#141416] font-[Avenir] font-[400] md:text-[18px] text-[16px] md:leading-[29px] leading-[26px] hover:underline">
-                  <img src="/images/call1.svg" />
-                  <span>813-405-1455</span>
+                  <img :src="acfImages.phoneIcon"  />
+                  <span>{{ acfData.get_in_touch?.lets_connected?.phone_number }}</span>
                 </a>
               </li>
               <li>
-                <a href="mailto:swiftship@gmail.com"
+                <a :href="`mailto:${acfData.get_in_touch?.lets_connected?.email}`"
                   class="flex items-center gap-[15px] text-[#141416] font-[Avenir] font-[400] md:text-[18px] text-[16px] md:leading-[29px] leading-[26px] hover:underline">
-                  <img src="/images/mail.svg" />
-                  <span>swiftship@gmail.com</span>
+                  <img :src="acfImages.emailIcon" />
+                  <span>{{ acfData.get_in_touch?.lets_connected?.email }}</span>
                 </a>
               </li>
               <li>
                 <a href="#"
                   class="flex items-center gap-[15px] text-[#141416] font-[Avenir] font-[400] md:text-[18px] text-[16px] md:leading-[29px] leading-[26px] hover:underline">
-                  <img src="/images/location_on.svg" />
-                  <span>123 Elm St, Springfield, IL 62704, Australia</span>
+                  <img :src="acfImages.locationIcon" />
+                  <span>{{ acfData.get_in_touch?.lets_connected?.location }}</span>
                 </a>
               </li>
             </ul>
@@ -44,10 +51,12 @@ import { NuxtLink } from '#components';
           <div class="w-full lg:max-w-[calc(50%_-76px)] max-w-[100%]">
             <div class="bg-white border border-[#00000026] rounded-[20px] md:px-[40px] px-[20px] md:py-[42px] py-[25px]">
               <h2 class="text-[#141416] font-[PingLCG] font-[800] lg:text-[44px] md:text-[30px] text-[28px] lg:leading-[58px] md:leading-[48px] leading-[normal]">
-                Get In Touch.
+                <!-- Get In Touch. -->
+                 {{ acfData.get_in_touch?.get_in_touch?.title }}
               </h2>
               <p class="text-[#141416] font-[Avenir] font-[400] md:text-[18px] text-[16px] md:leading-[29px] leading-[26px] mt-[10px]">
-                Our Team Is Here to Help You Every Step of the Way!
+                <!-- Our Team Is Here to Help You Every Step of the Way! -->
+                 {{ acfData.get_in_touch?.get_in_touch?.description }}
               </p>
               <form class="mt-[35px]">
                 <div class="flex gap-[12px]">
@@ -70,7 +79,8 @@ import { NuxtLink } from '#components';
                 </label>
                 <NuxtLink
                   class="px-4 py-2 bg-[#248BC6] text-white rounded-[6px] font-[PingLCG] font-[500] text-[16px] leading-normal px-[36px] md:py-[16px] py-[12px] md:h-[57px] h-auto border border-[#248BC6] hover:bg-white hover:border-[#14141633] hover:text-[#141416] cursor-pointer text-center block w-full mt-[25px]">
-                  Send Message
+                  <!-- Send Message -->
+                   {{ acfData.get_in_touch?.get_in_touch?.button }}
                 </NuxtLink>
               </form>
 

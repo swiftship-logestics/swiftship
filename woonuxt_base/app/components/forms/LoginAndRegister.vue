@@ -117,34 +117,11 @@ const login = async (userInfo: UserInfo) => {
     // message.value = t('messages.account.loggingIn');
     toast.success('You have logged in successfully! 🎉');
     setTimeout(() => {
-      window.location.href = '/';
+      window.location.href = '/my-account';
     }, 2000);
   }
 
 };
-
-// // Pre-fill login credentials for testing
-// userInfo.value = {
-//   username: 'user', // or your test username
-//   email: 'user@mailinator.com',    // optional, only used if backend requires it
-//   password: 'tbi96@981',           // test password
-// };
-
-// // Automatically log in on form submit for testing
-// const handleFormSubmit = async () => {
-//   console.log('Submitting static login:', JSON.stringify(userInfo.value));
-//   const { success, error } = await loginUser(userInfo.value);
-
-//   if (success) {
-//     message.value = t('messages.account.loggingIn');
-//     errorMessage.value = '';
-//     console.log('Login successful!');
-//   } else {
-//     errorMessage.value = error ?? 'Unknown error';
-//     console.log('Login failed:', errorMessage.value);
-//   }
-// };
-
 
 const handleFormSubmit = async (userInfo: UserInfo) => {
 

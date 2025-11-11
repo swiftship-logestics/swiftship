@@ -1,4 +1,4 @@
-//index-FAQ.vue
+//ContactUs
 <script setup>
 import { useFetch } from '#app'
 import { NuxtLink } from '#components';
@@ -6,7 +6,7 @@ const apiUrl = import.meta.env.VITE_WC_API_URL
 
 // const { data, pending, error } = await useFetch('/api/page')
 
-const pageId = 466
+const pageId = 141
 const acfData = ref({})
 const acfImages = ref({})
 const pending = ref(true)
@@ -57,8 +57,6 @@ onMounted(async () => {
     }
 })
 
-
-
 </script>
 
 <template>
@@ -71,9 +69,6 @@ onMounted(async () => {
             </div>
         </div>
         <div v-else>
-
-            <div class="lg:mt-[-30px]"></div>
-            <FAQSection :acfData="acfData"  />
 
             <GetInTouch :acfData="acfData" :acfImages="acfImages" />
 

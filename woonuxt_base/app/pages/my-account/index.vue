@@ -11,15 +11,15 @@ useSeoMeta({
 });
 </script>
 
-<template>
+<!-- <template>
   <div class="container min-h-[600px]">
     <LazyLoginAndRegister />
   </div>
-</template>
+</template> -->
 
 
 
-<!-- <template>
+ <template>
   <div class="container min-h-[600px]">
     <div v-if="showLoader" class="fixed inset-0 bg-white flex items-center justify-center z-50">
       <div class="flex flex-col items-center">
@@ -61,11 +61,11 @@ useSeoMeta({
               <Icon name="ion:bag-check-outline" size="22" />
               {{ $t('messages.shop.order', 2) }}
             </NuxtLink>
-            <NuxtLink to="/my-account?tab=all-orders" class="flex items-center gap-4 p-2 px-4"
+            <!-- <NuxtLink to="/my-account?tab=all-orders" class="flex items-center gap-4 p-2 px-4"
               :class="{ active: activeTab == 'all-orders' }">
               <Icon name="ion:document-text-outline" size="22" />
               Track Order
-            </NuxtLink>
+            </NuxtLink> -->
           </nav>
           <!-- <template class="hidden lg:block">
             <hr class="my-8" />
@@ -79,7 +79,7 @@ useSeoMeta({
           </template> -->
 
 
-        <!-- </div>
+         </div>
 
         <main class="flex-1 w-full lg:my-8 rounded-lg max-w-screen-lg lg:sticky top-24">
           <AccountMyDetails v-if="activeTab === 'my-details'" :user="viewer" />
@@ -91,7 +91,7 @@ useSeoMeta({
       </div>
     </template>
   </div>
-</template> --> 
+</template>
 
 <style lang="postcss" scoped>
 nav a {
