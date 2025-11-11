@@ -1,40 +1,32 @@
 <script setup>
 import { ref } from "vue"
 
+const props = defineProps({
+  acfData: Object
+})
+
+
 const openIndex = ref(null)
 
 const toggle = (index) => {
     openIndex.value = openIndex.value === index ? null : index
 }
 
-// Example FAQ data
-const faqs = [
-    {
-        question: "How do I track my parcel?",
-        answer:
-            "You can easily track your parcel in real-time using our advanced live tracking system by entering your unique tracking number."
-    },
-    {
-        question: "How do I schedule a pickup?",
-        answer:
-            "Delivery usually takes 2-3 business days domestically and 5-7 days internationally."
-    },
-    {
-        question: "How much does shipping cost?",
-        answer:
-            "Yes, you can schedule a pickup directly from our website or mobile app."
-    },
-    {
-        question: "What items are not allowed for shipping?",
-        answer:
-            "Yes, you can schedule a pickup directly from our website or mobile app."
-    },
-    {
-        question: "What should I do if my parcel is delayed?",
-        answer:
-            "Yes, you can schedule a pickup directly from our website or mobile app."
+const faqs = computed(() => {
+  const qa = props.acfData?.quick_answer?.question_answer
+  if (!qa) return []
+
+  const faqArray = []
+  for (let i = 1; i <= 10; i++) {
+    const question = qa[`question_${i}`] || qa[`question_${i}_`]
+    const answer = qa[`answer_${i}`]
+    if (question && answer) {
+      faqArray.push({ question, answer })
     }
-]
+  }
+  return faqArray
+})
+
 </script>
 
 <template>
@@ -43,11 +35,13 @@ const faqs = [
             <div class="lg:py-[100px] py-[50px]">
                 <div class="text-center">
                     <span
-                        class="text-[#248BC6] font-[Avenir] font-[700] text-[18px] leading-[34px] uppercase">frequently
-                        asked
-                        questions</span>
+                        class="text-[#248BC6] font-[Avenir] font-[700] text-[18px] leading-[34px] uppercase">
+                        <!-- frequently asked questions -->
+                         {{ acfData.quick_answer?.heading }}
+                    </span>
                     <h2 class="text-[#141416] font-[PingLCG] font-[800] lg:text-[44px] md:text-[30px] text-[29px] lg:leading-[66px] md:leading-[56px] leading-[36px] md:mt-[0] mt-[15px]">
-                        Quick Answer to your Questions
+                        <!-- Quick Answer to your Questions -->
+                         {{ acfData.quick_answer?.title }}
                     </h2>
                 </div>
                 <div class="accordion lg:mt-[40px] mt-[30px]">
